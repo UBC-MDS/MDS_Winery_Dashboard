@@ -33,52 +33,18 @@
 # Team Member Details
 1. Jianru
   - **Background**: life science, chem/microbio, graduated last summer
-  - **Strengths**:
-           time management, problem solving,
-  - **Weaknesses**: 
-            note taking, programming
-  - **Interests**: 
-            dive deeply in research projects and go beyond; watersports
+  
             
 2. Garoub
 -   **Background**: Industrial Engineer with some Aerospace/Logistics/Finance experience
--   **Strengths**: 
-            Problem solver,
-            Responsible, 
-            Strong in finding crucial little things 
-  - **Weaknesses**: 
-            Coding skills, 
-            ADHD
-
-  - **Interests**:
-            Finance/Crypto/Football/
 
 3. Kamal
 -   **Background**: Geophysics
--   **Strengths**: 
-            Math and computational programming
-            Team-work (I guess) :) 
 
--   **Weaknesses**: 
-           I do not have experience with the dashboard
-           Sometimes overfocus on unimportant details
--   **Interests**: Machine Learning, sport
 
 4. Neel
 
 -   **Background**: Physiology/Biochemistry, just graduated last spring 
--   **Strengths**: 
-            Decent statistics background
-            I take critique well do not be afraid to be honest
-            I feel I am a quick learner
 
--   **Weaknesses**: 
-             Only started learning to code in 2020
-             Struggled with GitHub workflow in past
-             Never made a dashboard before 
- 
--   **Interests**:
-             Data in Medicine, huge sports guy 
-             
              
  
