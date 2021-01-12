@@ -33,7 +33,6 @@
 # Team Member Details
 1. Jianru
   - **Background**: life science, chem/microbio, graduated last summer
-  
             
 2. Garoub
 -   **Background**: Industrial Engineer with some Aerospace/Logistics/Finance experience
@@ -41,10 +40,8 @@
 3. Kamal
 -   **Background**: Geophysics
 
-
 4. Neel
 
 -   **Background**: Physiology/Biochemistry, just graduated last spring 
 
-             
- 
+  
