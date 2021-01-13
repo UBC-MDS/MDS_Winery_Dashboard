@@ -1,6 +1,6 @@
-# Contributing to the ................ project
+# Contributing to the MDS Winery Dashboard project
 
-We welcome all contributions to this project. This document outlines how to propose a change to the .... project. 
+We welcome all contributions to this project. This document outlines how to propose a change to the MDS Winery Dashboard project. 
 
 ## Contribution Prerequisites
 
