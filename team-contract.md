@@ -1,7 +1,7 @@
 **532 Group 6 Team Work Contract**
 
 # Contract Overview
-**1. Hours**
+1. **Hours**
 - Jianru: more available on Saturdays and evening times on weekdays and less active on Fridays 
 - Kamal: Anytime except Fri-Sat before 3:00 pm
 - Garoub: Anytime except Tue-Fri 4:50pm-6:30 pm 
@@ -30,18 +30,6 @@
 6. **Fun**
 - Discussing non-project related things is encouraged, however if conversations exceed 5 minutes any team member can call a veto to refocus on project related topics
 
-# Team Member Details
-1. Jianru
-  - **Background**: life science, chem/microbio, graduated last summer
-            
-2. Garoub
--   **Background**: Industrial Engineer with some Aerospace/Logistics/Finance experience
 
-3. Kamal
--   **Background**: Geophysics
-
-4. Neel
-
--   **Background**: Physiology/Biochemistry, just graduated last spring 
 
   
