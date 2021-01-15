@@ -1,4 +1,5 @@
-## Wine Tasting App Proposal
+## Wine Tasting App Proposal 
+Date: 16/01/2021
 
 ### Section 1: Motivation and Purpose
 
