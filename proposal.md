@@ -8,6 +8,7 @@ There is a diverse array of available wines that exist in North America. The var
 
 ### Section 2:Description of the data
 
+
 In this project, we are using the [Wine Reviews](https://www.kaggle.com/zynicide/wine-reviews) Kaggle data set that contains 130k wine reviews with variety, location, winery, price, and description. The data scraped from WineEnthusiast on November 22nd, 2017, and it only contains wines with a review score higher than 80 between 1999 and 2017. For this project, we use the 54,762 instances of wine reviews from North America. 
 
 Each review consists of 13 explanatory variables that describe the wine in terms of origin (country, province, designation, region, winery), bottle information and reviews (description, points/ rating, price, title, variety), and information about the reviewers (taster name, taster Twitter handle). We are likely to select `country`, `description`, `points`,  `price`, `province`, and `variety` variables for our dashboard. We plan on creating visualizations that can filter on these variables to allow consumers to explore their interests and make a selection for their wine tasting experience.
