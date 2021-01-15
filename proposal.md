@@ -6,13 +6,21 @@ Target audience: Customers Coming for Wine Tasting
 
 There is a diverse array of available wines that exist in North America. The variety alone is enough to overwhelm the common consumer of wine products; there needs to be a way to convey key information about these wines to help customers make informed selections during their wine tasting events. To do this, we will build a dashboard to help customers visualize the intricacies that disintguish different wines in North America particularily in terms of quality, price, origin and flavour. Our app will show the distribution of these factors by filtering and re-ordering on different characteristics to make direct comparisions between different types of wine. 
 
+<<<<<<< HEAD
 ### Section 1:Description of the data
 
 In this project, we are using the [Wine Reviews](https://www.kaggle.com/zynicide/wine-reviews) Kaggle data set that contains 130k wine reviews with variety, location, winery, price, and description. The data scraped from WineEnthusiast on November 22nd, 2017, and it only contains wines with a review score higher than 80 between 1999 and 2017. For this project, we use the 54,762 instances of wine reviews from North America. 
 
 Each review consists of 13 explanatory variables that describe the wine in terms of origin (country, province, designation, region, winery), bottle information and reviews (description, points/ rating, price, title, variety), and information about the reviewers (taster name, taster Twitter handle). We are likely to select `country`, `description`, `points`,  `price`, `province`, and `variety` variables for our dashboard.
+=======
+### Section 2:Description of the data
 
-### Section 3: 
+In this project, we are using the [Wine Reviews](https://www.kaggle.com/zynicide/wine-reviews) Kaggle data set that contains 130k wine reviews with variety, location, winery, price, and description. The data scraped from WineEnthusiast on November 22nd, 2017, and it only contains wines with a review score higher than 80 between 1999 and 2017. For this project, we use the 54,762 instances of wine reviews from North America. 
+>>>>>>> b9d0bfa2416263acbeff1d4a4b372f0506481543
+
+Each review consists of 13 explanatory variables that describe the wine in terms of origin (country, province, designation, region, winery), bottle information and reviews (description, points/ rating, price, title, variety), and information about the reviewers (taster name, taster Twitter handle). We are likely to select `country`, `description`, `points`,  `price`, `province`, and `variety` variables for our dashboard. We plan on creating visualizations that can filter on these variables to allow consumers to explore their interests and make a selection for their wine tasting experience.
+
+### Section 3: Research questions and usage scenarios: 
 
 Joel is a fantastic instructor and an Olympics enthusiast but knows nothing about wine. One day, he decided to visit the MDS winery to try a variety of wines to ….
 . 
