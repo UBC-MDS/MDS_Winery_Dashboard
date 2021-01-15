@@ -1,3 +1,5 @@
+## Wine Tasting App Proposal
+
 ### Section 1: Motivation and Purpose
 
 Our role: Data Science Team Hired at Vancouver Winery
