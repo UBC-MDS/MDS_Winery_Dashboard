@@ -12,7 +12,7 @@ In this project, we are using the [Wine Reviews](https://www.kaggle.com/zynicide
 
 Each review consists of 13 explanatory variables that describe the wine in terms of origin (country, province, designation, region, winery), bottle information and reviews (description, points/ rating, price, title, variety), and information about the reviewers (taster name, taster Twitter handle). We are likely to select `country`, `description`, `points`,  `price`, `province`, and `variety` variables for our dashboard. We plan on creating visualizations that can filter on these variables to allow consumers to explore their interests and make a selection for their wine tasting experience.
 
-### Section 3: 
+### Section 3: Research questions and usage scenarios: 
 
 Joel is a fantastic instructor and an Olympics enthusiast but knows nothing about wine. One day, he decided to visit the MDS winery to try a variety of wines to ….
 . 
