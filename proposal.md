@@ -3,7 +3,7 @@ Date: 16/01/2021
 
 ### Section 1: Motivation and Purpose
 
-Our role: Data Science Team Hired at Vancouver Winery
+Our role: Data Science Team Hired by Vancouver Winery
 
 Target audience: Customers Coming for Wine Tasting
 
