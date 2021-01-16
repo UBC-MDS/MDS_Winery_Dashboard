@@ -3,8 +3,11 @@
 
 #### Team members of group 6
 Jianru Deng
+
 Mo Garoub
+
 Kamal Moravej Jahromi
+
 Neel Phaterpekar
 
 ## Description of the app & Sketch
