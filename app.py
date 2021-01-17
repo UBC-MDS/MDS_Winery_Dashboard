@@ -3,10 +3,9 @@ import dash_html_components as html
 import dash_core_components as dcc
 import altair as alt
 import pandas as pd
-from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
-data = pd.read_csv('/Users/neelphaterpekar/Desktop/MDS/MDS_Block4/DSCI_532/group_6/data/wine_data.csv')
+data = pd.read_csv('data/raw/wine_data.csv')
 filtered = data.query('country == "US" & province == "Oregon"') 
 
 def plot_altair():
