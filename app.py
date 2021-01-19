@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
 alt.data_transformers.disable_max_rows()
-data = pd.read_csv('/Users/neelphaterpekar/Desktop/MDS/MDS_Block4/DSCI_532/group_6/data/raw/wine_data.csv')
+data = pd.read_csv('data/raw/wine_data.csv')
 filtered = data.query('country == "US" & province == "Oregon"') 
 
 # @app.callback(
