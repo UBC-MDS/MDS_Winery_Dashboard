@@ -5,10 +5,12 @@ import altair as alt
 import pandas as pd
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
+from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
-data = pd.read_csv('data/raw/wine_data.csv')
-filtered = data.query('country == "US" & province == "Oregon"') 
+df = pd.read_csv('data/raw/wine_data.csv')
+df = df.query('country == "US" ') 
+#filtered = data
 
 # @app.callback(
 #     Output('widget-2', 'children'),
@@ -16,17 +18,28 @@ filtered = data.query('country == "US" & province == "Oregon"')
 # def update_output(input_value):
 #     return input_value
 def plot_map():
-    chart = alt.Chart(filtered, title = 'Wine Rating by Price ').mark_circle().encode(
-        x = 'price',
-        y = alt.Y('points', scale=alt.Scale(zero=False)))
+    counties = alt.topo_feature(data.us_10m.url, 'counties')
+    source = data.unemployment.url
+    chart= alt.Chart(counties).mark_geoshape().encode(
+    color='rate:Q'
+).transform_lookup(
+    lookup='id',
+    from_=alt.LookupData(source, 'id', ['rate'])
+).project(
+    type='albersUsa'
+).properties(
+    width=500,
+    height=300
+)
+
     return chart.to_html()
 
 def plot_altair():
-    chart2 = alt.Chart(filtered, title = 'Wine Rating by Price ').mark_circle().encode(
+    chart2 = alt.Chart(df, title = 'Wine Rating by Price ').mark_circle().encode(
         x = 'price',
         y = alt.Y('points', scale=alt.Scale(zero=False)))
 
-    chart1 = alt.Chart(filtered.query("variety == 'Baco Noir' | variety == 'Red Blend' | variety == 'Chardonnay' | variety == 'Pinot Noir'"), title = 'Average Price of Selection').mark_bar().encode(
+    chart1 = alt.Chart(df.query("variety == 'Baco Noir' | variety == 'Red Blend' | variety == 'Chardonnay' | variety == 'Pinot Noir'"), title = 'Average Price of Selection').mark_bar().encode(
         y = alt.Y('price',title='Average Price ($)'),
         x = alt.X('variety', scale=alt.Scale(zero=False))
     )
@@ -36,36 +49,33 @@ def plot_altair():
 
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout = dbc.Container([
-    html.H1('App Layout for DSCI_531'),
+    dcc.Tabs([
+        dcc.Tab( label='Winary Dashboard'),
+        dcc.Tab( label='Data')]),
+    html.H1('MDS Winary Dashboard'),
     dbc.Row([
         dbc.Col([
             html.Br(),
             html.Label([
                 'Country Selection']),
             dcc.Dropdown(
-                options=[
-                    {'label' : 'Canada', 'value' : 'Canada'},                   # Need to do Dict. Comprehension with data  
-                    {'label': 'United States', 'value' : 'US'}],
-                    placeholder='Select a Country', 
-                    multi=True
+                options=[{'label': country, 'value': country} for country in df['country'].unique()],
+                placeholder='Select a Country', 
+                multi=True
             ),
             html.Label([
                 'Provice/State Selection']),
             dcc.Dropdown(
-                options=[
-                    {'label' : 'Washington', 'value' : 'Washington'},
-                    {'label': 'Oregon', 'value' : 'Oregon'}],
-                    placeholder='Select a State', 
-                    multi=True
+                options=[{'label': province, 'value': province} for province in df['province'].unique()],
+                placeholder='Select a State', 
+                multi=True
             ),
             html.Label(['Wine Type']
             ),
             dcc.Dropdown(
-                options=[
-                    {'label' : 'Red', 'value' : 'Red'},
-                    {'label': 'White', 'value' : 'White'}],
-                    placeholder='Select a Variety', 
-                    multi=True
+                options=[{'label': variety, 'value': variety} for variety in df['variety'].unique()],
+                placeholder='Select a Variety', 
+                multi=True
             ),
             html.Br(),
             html.Label(['Price Range']
@@ -80,11 +90,11 @@ app.layout = dbc.Container([
             ),
             dcc.RangeSlider(min=0, max=1, value=[0.5,0.5], marks = {0: '0', 1: '1'}  # Need to make this work in decimal points
             ),
-            ], md=4, style={'border': '1px solid #d3d3d3', 'border-radius': '10px'}),
+            ], md=5, style={'border': '1px solid #d3d3d3', 'border-radius': '10px'}),
         dbc.Col([
             html.Iframe(srcDoc=plot_map(),
                 style={'border-width': '0', 'width': '100%', 'height': '400px'})
-            ], md=8)
+            ], md=7)
         ]),
     dbc.Row([
         dbc.Col([
