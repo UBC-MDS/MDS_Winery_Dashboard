@@ -7,7 +7,7 @@ from vega_datasets import data
 import pandas as pd
 
 alt.data_transformers.disable_max_rows()
-df = pd.read_csv('data/processed/cleaned_data.csv')
+df = pd.read_csv('../data/processed/cleaned_data.csv')
 df = df.query('country == "US" ') 
 
 # Setup app and layout/frontend
