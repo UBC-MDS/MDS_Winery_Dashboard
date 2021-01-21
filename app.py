@@ -9,7 +9,7 @@ from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
 df = pd.read_csv('/Users/neelphaterpekar/Desktop/MDS/MDS_Block4/DSCI_532/group_6/data/raw/wine_data.csv') # data/raw/wine_data.csv
-df = df.query('country == "US" ') 
+df = df.query('country == "US"') 
 #filtered = data
 
 # @app.callback(
@@ -56,12 +56,13 @@ app.layout = dbc.Container([
                 id='province-widget',
                 value='Oregon', 
                 options=[{'label': province, 'value': province} for province in df['province'].unique()],
-                placeholder='Select a State', 
-                # multi=True
+                placeholder='Select a State'
             ),
             html.Label(['Wine Type']
             ),
             dcc.Dropdown(
+                id='wine_variety',
+                value='Red Blend', 
                 options=[{'label': variety, 'value': variety} for variety in df['variety'].unique()],
                 placeholder='Select a Variety', 
                 multi=True
@@ -85,7 +86,7 @@ app.layout = dbc.Container([
                 ),
             html.Label(['Value Ratio']
             ),
-            dcc.RangeSlider(min=0, max=1, value=[0.5,0.5], marks = {0: '0', 1: '1'}  # Need to make this work in decimal points
+            dcc.RangeSlider(min=0, max=1, step=0.1, value=[0.2,0.6], marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
             ),
             ], md=5, style={'border': '1px solid #d3d3d3', 'border-radius': '10px'}),
         dbc.Col([
@@ -97,7 +98,7 @@ app.layout = dbc.Container([
         dbc.Col([
             html.Iframe(
                 id = 'plots',
-                style={'border-width': '0', 'width': '100%', 'height': '400px'})
+                style={'border-width': '0', 'width': '100%', 'height': '700px'})
             ], md=8),
         dbc.Col([
             dbc.Row([
@@ -119,30 +120,34 @@ app.layout = dbc.Container([
                html.Br()
             ])
         ])
-    ])
+    ]),
+    html.Br(),
+    html.Br()
 ])
 
 @app.callback(
     Output('plots', 'srcDoc'),
     Input('province-widget', 'value'),
     Input('price', 'value'),
-    Input('points', 'value'))
-def plot_altair(selected_province, price_value, points_value):
+    Input('points', 'value'),
+    Input('wine_variety', 'value'))
+def plot_altair(selected_province, price_value, points_value, wine_variety):
     df_filtered = df[df['province'] == selected_province]
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
-    chart = alt.Chart(df_filtered).mark_point().encode(
+    df_filtered = df_filtered.query("variety == @wine_variety")
+    chart1 = alt.Chart(df_filtered).mark_point().encode(
         x=alt.X('price', scale=alt.Scale(zero=False)),
         y=alt.Y('points', scale=alt.Scale(zero=False)),
         color = 'variety',
         tooltip='variety').interactive()
     
-    #   chart1 = alt.Chart(df.query("variety == 'Baco Noir' | variety == 'Red Blend' | variety == 'Chardonnay' | variety == 'Pinot Noir'"), title = 'Average Price of Selection').mark_bar().encode(
-    #     y = alt.Y('price',title='Average Price ($)'),
-    #     x = alt.X('variety', scale=alt.Scale(zero=False))
-    # )
+    chart2 = alt.Chart(df_filtered, title = 'Average Price of Selection').mark_bar().encode(
+        y = alt.Y('price',title='Average Price ($)'),
+        x = alt.X('variety', scale=alt.Scale(zero=False))
+    )
 
-    # chart = chart1 | chart2
+    chart = chart1 | chart2
     return chart.to_html()
 
 app.run_server(debug=True)
