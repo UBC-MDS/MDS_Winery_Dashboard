@@ -9,7 +9,7 @@ from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
 
-df = pd.read_csv('../data/processed/cleaned_data.csv')
+df = pd.read_csv('/Users/neelphaterpekar/Desktop/MDS/MDS_Block4/DSCI_532/group_6/data/processed/cleaned_data.csv') #../data/processed/cleaned_data.csv
 df = df.query('country == "US" ') 
     
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -21,21 +21,19 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.Br(),
-            html.Label([
-                'Country Selection']),
-            dcc.Dropdown(
-                options=[{'label': country, 'value': country} for country in df['country'].unique()],
-                placeholder='Select a Country', 
-                multi=True
-            ),
+            # html.Label([
+            #     'Country Selection']),
+            # dcc.Dropdown(
+            #     options=[{'label': country, 'value': country} for country in df['country'].unique()],
+            #     placeholder='Select a Country', 
+            #     multi=True
+            # ),
             html.Label([
                 'Provice/State Selection']),
             dcc.Dropdown(
                 id='province-widget',
-
                 value='Select your State',  
                 options=[{'label': state, 'value': state} for state in df['state'].unique()],
-
                 placeholder='Select a State'
             ),
             html.Label(['Wine Type']
@@ -43,7 +41,6 @@ app.layout = dbc.Container([
             dcc.Dropdown(
                 id='wine_variety',
                 value='Red Blend', 
-                options=[{'label': variety, 'value': variety} for variety in df['variety'].unique()],
                 placeholder='Select a Variety', 
                 multi=True
             ),
@@ -73,14 +70,14 @@ app.layout = dbc.Container([
         dbc.Col([
             html.Iframe(
                 id = 'maps',
-                style={'border-width': '0', 'width': '100%', 'height': '100%'})
+                style={'border-width': '0', 'width': '100%', 'height': '440px'})
             ], md=8)
         ]),
         dbc.Row([
         dbc.Col([
             html.Iframe(
                 id = 'plots',
-                style={'border-width': '0', 'width': '100%', 'height': '700px'})
+                style={'border-width': '0', 'width': '100%', 'height': '400px'})
             ], md=8),
         dbc.Col([
             dbc.Row([
@@ -106,6 +103,13 @@ app.layout = dbc.Container([
     html.Br(),
     html.Br()
 ])
+
+@app.callback(
+    Output('wine_variety', 'options'),
+    Input('province-widget', 'value'))
+def wine_options(state):
+    df_filtered = df[df['state'] == state]
+    return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
 
 @app.callback(
     Output('plots', 'srcDoc'),
