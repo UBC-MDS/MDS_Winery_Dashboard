@@ -32,7 +32,7 @@ app.layout = dbc.Container([
                 'Provice/State Selection']),
             dcc.Dropdown(
                 id='province-widget',
-                value='Select your State',  
+                value='California',  
                 options=[{'label': state, 'value': state} for state in df['state'].unique()],
                 placeholder='Select a State'
             ),
@@ -42,7 +42,7 @@ app.layout = dbc.Container([
                 id='wine_variety',
                 value='Red Blend', 
                 placeholder='Select a Variety', 
-                multi=True
+                #multi=True
             ),
             html.Br(),
             html.Label(['Price Range']
@@ -51,7 +51,8 @@ app.layout = dbc.Container([
                 id='price',
                 min=df['price'].min(),
                 max=df['price'].max(),
-                value=[df['price'].min(), df['price'].max()]
+                value=[df['price'].min(), df['price'].max()],
+                marks = {50: '50', 100: '100'}
             ),
             html.Label(['Points Range']
             ),
@@ -59,11 +60,16 @@ app.layout = dbc.Container([
                 id='points',
                 min=df['points'].min(),
                 max=df['points'].max(),
-                value=[df['points'].min(), df['points'].max()]
+                value=[df['points'].min(), df['points'].max()],
+                marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                 ),
             html.Label(['Value Ratio']
             ),
-            dcc.RangeSlider(min=0, max=1, step=0.1, value=[0.2,0.6], marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
+            dcc.RangeSlider(min=0, 
+                max=1, 
+                step=0.1, 
+                value=[0.2,0.6], 
+                marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
             ),
             ], md=4,
             style={'border': '1px solid #d3d3d3', 'border-radius': '10px'}),
@@ -73,37 +79,88 @@ app.layout = dbc.Container([
                 style={'border-width': '0', 'width': '100%', 'height': '440px'})
             ], md=8)
         ]),
-        dbc.Row([
+    dbc.Row([
         dbc.Col([
             html.Iframe(
                 id = 'plots',
-                style={'border-width': '0', 'width': '100%', 'height': '400px'})
+                style={'border-width': '0', 'width': '100%', 'height': '440px'})
             ], md=8),
         dbc.Col([
-            dbc.Row([
-               html.Br(),
-               html.Label(['This will be for values in one of the cards'], 
-                    style={'border': '1px solid #d3d3d3', 'border-radius': '30px'}),
-               html.Br()
-            ]),
-            html.Br(),
-            html.Br(),              # Random spacing added to make the layout more realistic... we should delete at some point 
-            html.Br(),
-            html.Br(),
-            html.Br(),
             html.Br(),
             dbc.Row([
-               html.Br(),
-               html.Label(['This will be for values in one of the cards'], 
-                    style={'border': '1px solid #d3d3d3', 'border-radius': '30px'}),
-               html.Br()
+                html.H4(['Highest Value Wine:']),
+                html.Br(),
+                html.H5(
+                    id = 'highest_value_name'),
+                html.Br(),
+                html.H3(
+                    id = 'highest_value'),
+                ], style={'border': '1px solid #d3d3d3', 'padding-left': '22%', 'padding-right': '20%', 'height': '175px', 'border': '1px solid', 'backgroundColor' : '#bfefff'}),  
+            html.Br(),    # Random spacing added to make the layout more realistic... we should delete at some point 
+            dbc.Row([
+                dbc.Col([
+                    html.H4(['Highest Wine Score:']),
+                    html.Br(),
+                    html.H5(
+                        id='highest_score_name'),
+                    html.H3(
+                        id='highest_score'),
+                ], style={'border': '1px solid #d3d3d3', 'padding-left': '20%', 'height': '175px', 'border': '1px solid', 'backgroundColor' : '#bfefff'}),
+                ])
             ])
-        ])
-    ]),
-    html.Br(),
-    html.Br()
+        ]),
 ])
 
+@app.callback(
+    Output('highest_score', 'children'),
+    Input('wine_variety', 'value'),
+    Input('province-widget', 'value'))
+def max_score(wine_type, state):
+    df_filtered = df[df['state'] == state]
+    df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+    max_points = max(df_filtered['points'])
+    df_filtered = df[df['points'] == max_points]
+    wine_name = df_filtered['title'].iloc[0]
+
+    return str(str(round(max_points,2)))
+
+
+@app.callback(
+    Output('highest_score_name', 'children'),
+    Input('wine_variety', 'value'),
+    Input('province-widget', 'value'))
+def max_score(wine_type, state):
+    df_filtered = df[df['state'] == state]
+    df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+    max_points = max(df_filtered['points'])
+    df_filtered = df[df['points'] == max_points]
+    wine_name = df_filtered['title'].iloc[0]
+
+    return str(wine_name.split(' (')[0])
+
+@app.callback(
+    Output('highest_value_name', 'children'),
+    Input('wine_variety', 'value'),
+    Input('province-widget', 'value'))
+def max_value(wine_type, state):
+    df_filtered = df[df['state'] == state]
+    df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+    max_value = max(df_filtered['value'])
+    df_filtered = df[df['value'] == max_value]
+    wine_name = df_filtered['title'].iloc[0]
+    return (wine_name.split(' (')[0] + '     ')
+
+@app.callback(
+    Output('highest_value', 'children'),
+    Input('wine_variety', 'value'),
+    Input('province-widget', 'value'))
+def max_value(wine_type, state):
+    df_filtered = df[df['state'] == state]
+    df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+    max_value = max(df_filtered['value'])
+    df_filtered = df[df['value'] == max_value]
+    return str(str(round(max_value, 2)))
+  
 @app.callback(
     Output('wine_variety', 'options'),
     Input('province-widget', 'value'))
@@ -130,8 +187,9 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
         tooltip='variety').interactive()
     
     chart2 = alt.Chart(df_filtered, title = 'Average Price of Selection').mark_bar().encode(
-        y = alt.Y('price',title='Average Price ($)'),
-        x = alt.X('variety', scale=alt.Scale(zero=False))
+        y = alt.Y('price', title='Average Price ($)'),
+        x = alt.X('variety', scale=alt.Scale(zero=False)),
+        color = 'variety',
     )
 
     chart = chart1 | chart2
