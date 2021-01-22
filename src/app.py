@@ -8,10 +8,9 @@ from dash.dependencies import Input, Output
 from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
+
 df = pd.read_csv('../data/processed/cleaned_data.csv')
 df = df.query('country == "US" ') 
-
-
     
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.layout = dbc.Container([
@@ -33,8 +32,10 @@ app.layout = dbc.Container([
                 'Provice/State Selection']),
             dcc.Dropdown(
                 id='province-widget',
+
                 value='Select your State',  
                 options=[{'label': state, 'value': state} for state in df['state'].unique()],
+
                 placeholder='Select a State'
             ),
             html.Label(['Wine Type']
@@ -113,6 +114,7 @@ app.layout = dbc.Container([
     Input('points', 'value'),
     Input('wine_variety', 'value'))
 def plot_altair(selected_province, price_value, points_value, wine_variety):
+
     df_filtered = df[df['state'] == selected_province]
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
