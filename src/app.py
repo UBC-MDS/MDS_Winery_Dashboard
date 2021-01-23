@@ -9,16 +9,21 @@ from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
 
-df = pd.read_csv('data/processed/cleaned_data.csv') #../data/processed/cleaned_data.csv
+df = pd.read_csv('../data/processed/cleaned_data.csv') #../data/processed/cleaned_data.csv
 df = df.query('country == "US" ') 
-    
+
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 server=app.server
+"""
+Dashboard layout
+"""
+
 app.layout = dbc.Container([
     dcc.Tabs([
         dcc.Tab( label='Winary Dashboard'),
         dcc.Tab( label='Data')]),
-    html.H1('MDS Winary Dashboard'),
+    html.H2('MDS Winery Dashboard'),
     dbc.Row([
         dbc.Col([
             html.Br(),
@@ -35,7 +40,8 @@ app.layout = dbc.Container([
                 id='province-widget',
                 value='select your state',  
                 options=[{'label': state, 'value': state} for state in df['state'].unique()],
-                placeholder='Select a State'
+                placeholder='Select a State',
+                # multi=True
             ),
             html.Label(['Wine Type']
             ),
@@ -43,7 +49,7 @@ app.layout = dbc.Container([
                 id='wine_variety',
                 value='select a variety', 
                 placeholder='Select a Variety', 
-                #multi=True
+                multi=True
             ),
             html.Br(),
             html.Label(['Price Range']
@@ -53,9 +59,9 @@ app.layout = dbc.Container([
                 min=df['price'].min(),
                 max=df['price'].max(),
                 value=[df['price'].min(), df['price'].max()],
-                marks = {50: '50', 100: '100'}
+                marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100'}
             ),
-            html.Label(['Points Range']
+            html.Label(['Rating Points Range']
             ),
             dcc.RangeSlider(
                 id='points',
@@ -185,7 +191,7 @@ def max_value(wine_type, state):
     max_value = max(df_filtered['value'])
     df_filtered = df[df['value'] == max_value]
     return str(str(round(max_value, 2)))
-  
+
 @app.callback(
     Output('wine_variety', 'options'),
     Input('province-widget', 'value'))
@@ -217,9 +223,10 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
         tooltip='title').interactive()
     
     chart2 = alt.Chart(df_filtered, title = 'Average Price of Selection').mark_bar().encode(
-        y = alt.Y('price', title='Average Price ($)'),
+        y = alt.Y('mean(price)', title='Average Price ($)'),
         x = alt.X('variety', scale=alt.Scale(zero=False), axis=alt.Axis(labelAngle= -45),),
         color = 'variety',
+        tooltip = alt.Tooltip('mean(price)', format='.2f')        
     )
 
     chart = chart1 | chart2
@@ -257,9 +264,9 @@ def plot_altair(selected_province, price_value, points_value,wine_variety):
     map_click = alt.selection_multi(fields=['state'])
     states = alt.topo_feature(data.us_10m.url, "states")
 
-    colormap = alt.Scale(domain=[0, 100, 1000, 2000, 4000, 8000, 16000, 32000],
+    colormap = alt.Scale(domain=[0, 100, 1000, 2000, 4000, 8000, 16000],
                          range=['#C7DBEA', '#CCCCFF', '#B8AED2', '#3A41C61',
-                                '#9980D4', '#722CB7', '#663399', '#512888'])
+                                '#9980D4', '#722CB7', '#663399'])
 
     foreground = alt.Chart(states).mark_geoshape().encode(
         color=alt.Color('Num Reviews:Q',
@@ -298,4 +305,3 @@ def plot_altair(selected_province, price_value, points_value,wine_variety):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
