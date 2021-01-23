@@ -9,7 +9,7 @@ from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
 
-df = pd.read_csv('../data/processed/cleaned_data.csv') #../data/processed/cleaned_data.csv
+df = pd.read_csv('data/processed/cleaned_data.csv') #../data/processed/cleaned_data.csv
 df = df.query('country == "US" ') 
     
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
