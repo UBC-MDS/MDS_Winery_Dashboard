@@ -9,16 +9,21 @@ from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
 
-df = pd.read_csv('data/processed/cleaned_data.csv') #../data/processed/cleaned_data.csv
+df = pd.read_csv('../data/processed/cleaned_data.csv') #../data/processed/cleaned_data.csv
 df = df.query('country == "US" ') 
-    
+
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 server=app.server
+"""
+Dashboard layout
+"""
+
 app.layout = dbc.Container([
     dcc.Tabs([
         dcc.Tab( label='Winary Dashboard'),
         dcc.Tab( label='Data')]),
-    html.H1('MDS Winary Dashboard'),
+    html.H2('MDS Winery Dashboard'),
     dbc.Row([
         dbc.Col([
             html.Br(),
@@ -35,7 +40,8 @@ app.layout = dbc.Container([
                 id='province-widget',
                 value='select your state',  
                 options=[{'label': state, 'value': state} for state in df['state'].unique()],
-                placeholder='Select a State'
+                placeholder='Select a State',
+                # multi=True
             ),
             html.Label(['Wine Type']
             ),
@@ -53,9 +59,9 @@ app.layout = dbc.Container([
                 min=df['price'].min(),
                 max=df['price'].max(),
                 value=[df['price'].min(), df['price'].max()],
-                marks = {50: '50', 100: '100'}
+                marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100'}
             ),
-            html.Label(['Points Range']
+            html.Label(['Rating Points Range']
             ),
             dcc.RangeSlider(
                 id='points',
@@ -185,7 +191,7 @@ def max_value(wine_type, state):
     max_value = max(df_filtered['value'])
     df_filtered = df[df['value'] == max_value]
     return str(str(round(max_value, 2)))
-  
+
 @app.callback(
     Output('wine_variety', 'options'),
     Input('province-widget', 'value'))
@@ -227,7 +233,7 @@ def plot_altair(selected_province, price_value, points_value):
             op="sum",  
             order='descending'
             )),
-        alt.Y('price' + ':Q', title='Price($)',
+        alt.Y('mean(price)' + ':Q', title='Price($)',
         scale=alt.Scale(domain=[min(new_data['price']),
         max(new_data['price'])])),
         color=alt.condition(
@@ -313,4 +319,3 @@ def plot_altair(selected_province, price_value, points_value,wine_variety):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
