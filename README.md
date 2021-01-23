@@ -1,5 +1,8 @@
 # MDS_Winery_Dashboard
 
+The link to the deployed dashboard:
+https://mds-winery-2020.herokuapp.com/
+
 
 #### Team members of group 6
 Jianru Deng
