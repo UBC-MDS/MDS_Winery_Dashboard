@@ -13,6 +13,7 @@ df = pd.read_csv('data/processed/cleaned_data.csv') #../data/processed/cleaned_d
 df = df.query('country == "US" ') 
     
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
+server=app.server
 app.layout = dbc.Container([
     dcc.Tabs([
         dcc.Tab( label='Winary Dashboard'),
@@ -32,7 +33,7 @@ app.layout = dbc.Container([
                 'Provice/State Selection']),
             dcc.Dropdown(
                 id='province-widget',
-                value='California',  
+                value='select your state',  
                 options=[{'label': state, 'value': state} for state in df['state'].unique()],
                 placeholder='Select a State'
             ),
@@ -202,7 +203,7 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
     Input('points', 'value'),
      Input('wine_variety', 'value'))
 def plot_altair(selected_province, price_value, points_value,wine_variety):
-    if selected_province == 'Select your State':
+    if selected_province == 'select your state':
         df_filtered = df
     else:
         df_filtered = df[df['state'] == selected_province]
