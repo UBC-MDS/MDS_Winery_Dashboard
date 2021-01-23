@@ -90,7 +90,7 @@ app.layout = dbc.Container([
         dbc.Col([
             html.Iframe(
                 id = 'plots',
-                style={'border-width': '0', 'width': '100%', 'height': '500px'})
+                style={'border-width': '0', 'width': '100%', 'height': '100%'})
             ], md=8),
         dbc.Col([
             html.Br(),
@@ -124,7 +124,7 @@ app.layout = dbc.Container([
     Input('province-widget', 'value'))
 def max_score(wine_type, state):
     if state == 'select your state':
-        return None
+        df_filtered = df
     else:
         df_filtered = df[df['state'] == state]
     if wine_type == 'select a variety':
@@ -206,30 +206,44 @@ def wine_options(state):
     Output('plots', 'srcDoc'),
     Input('province-widget', 'value'),
     Input('price', 'value'),
-    Input('points', 'value'),
-    Input('wine_variety', 'value'))
-def plot_altair(selected_province, price_value, points_value, wine_variety):
+    Input('points', 'value'))
+    #Input('wine_variety', 'value')
+def plot_altair(selected_province, price_value, points_value):
     if selected_province == 'select your state':
         df_filtered = df
     else:
         df_filtered = df[df['state'] == selected_province]
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
-    df_filtered = df_filtered.query("variety == @wine_variety")
-    chart1 = alt.Chart(df_filtered).mark_point().encode(
-        x=alt.X('price', scale=alt.Scale(zero=False)),
-        y=alt.Y('points', scale=alt.Scale(zero=False)),
-        color = 'variety',
-        tooltip='title').interactive()
-    
-    chart2 = alt.Chart(df_filtered, title = 'Average Price of Selection').mark_bar().encode(
-        y = alt.Y('mean(price)', title='Average Price ($)'),
-        x = alt.X('variety', scale=alt.Scale(zero=False), axis=alt.Axis(labelAngle= -45),),
-        color = 'variety',
-        tooltip = alt.Tooltip('mean(price)', format='.2f')        
-    )
+    #df_filtered = df_filtered.query("variety == @wine_variety")
+    data = df_filtered.groupby('variety')[['price']].mean()
+    new_data = data.sort_values(by='price', ascending=False).head(15).reset_index()
+    uniqu_var = new_data['variety'].unique()
+    df_chart = df[df.variety.isin(uniqu_var)]
+    chart1 = alt.Chart(df_chart).mark_circle(size = 60,
+    opacity=0.5).encode(
+        x=alt.X('price', scale=alt.Scale(zero=False), title = 'Price($)'),
+        y=alt.Y('points', scale=alt.Scale(zero=False), title = 'Points'),
+        color=alt.Color('variety', legend = None), tooltip = ['value', 'variety']).properties(width= 200, height=200)
 
-    chart = chart1 | chart2
+    ranked_bar = alt.Chart(new_data).mark_bar().encode(
+        alt.X('variety' +':N', 
+        sort=alt.EncodingSortField(
+            field='price',  
+            op="sum",  
+            order='descending'
+            )),
+        alt.Y('mean(price)' + ':Q', title='Price($)',
+        scale=alt.Scale(domain=[min(new_data['price']),
+        max(new_data['price'])])),
+        color=alt.condition(
+            alt.datum['variety'] == new_data['variety'][0],
+            alt.value('#512888'),
+            alt.value('lightgrey'))
+            ).properties(width=320, height=170) 
+    chart = (chart1 | ranked_bar).configure_axisX(
+                labelAngle=60)
+
     return chart.to_html()
 
 @app.callback(
@@ -264,9 +278,9 @@ def plot_altair(selected_province, price_value, points_value,wine_variety):
     map_click = alt.selection_multi(fields=['state'])
     states = alt.topo_feature(data.us_10m.url, "states")
 
-    colormap = alt.Scale(domain=[0, 100, 1000, 2000, 4000, 8000, 16000],
+    colormap = alt.Scale(domain=[0, 100, 1000, 2000, 4000, 8000],
                          range=['#C7DBEA', '#CCCCFF', '#B8AED2', '#3A41C61',
-                                '#9980D4', '#722CB7', '#663399'])
+                                '#9980D4', '#722CB7'])
 
     foreground = alt.Chart(states).mark_geoshape().encode(
         color=alt.Color('Num Reviews:Q',
