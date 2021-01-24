@@ -1,8 +1,8 @@
 This file documentes what this app has been implemented in the dashboard so far, as well as what features have not been done yet.
 
 ## Milestone 2 Implementation
-- Right now, our dashboard is able to let customers filter the wine data for a single desired US state and a single wine variety, using the left-side dropdown manu. In addition, there are two sliders that will filter the data based on wine price and rating points. This would enable customers to narrow down their selection and compare products within this range.
-- The choropleth map of united states on the top works as a heatmap of reviews showing the location of the selected state. Moreover, interactive feature has also been added by showing the average rating, price, value(price per point) and number of reviews.
+- Right now, our dashboard is able to let customers filter the wine data for a single desired US state and a single wine variety, using the left-side dropdown menu. In addition, there are two sliders that will filter the data based on wine price and rating points. This will enable customers to narrow down their selection and compare products within this range.
+- The choropleth map of US in the top right, works as a heatmap showing the number off reviews in the selected state. Moreover, we have added an interactive feature that shows the average rating, price, value(price per point) and number of reviews.
 - There are two plots. The first is a scatter plot showing all available wines that fall under the filtered criterion. Customers can see the relationship between price and points for all of the available wines. Furthermore, there is a bar chart that displays the average price for the current filtered wine type and origin. Customers are able to browse the names of the wines by interacting with the scatter plot. 
 - Finally, a recommendation is given to the customer based on the filtered criterion. The two recommendations are given based on the wine with the highest number of points as well as the wine that is considered to have the best value (number of points given the wine's price)
 
