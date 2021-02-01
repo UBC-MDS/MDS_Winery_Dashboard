@@ -44,7 +44,7 @@ app.layout = dbc.Container([
     dcc.Tabs([
         dcc.Tab( label='Winery Dashboard'),
         dcc.Tab( label='Data')]),
-    html.H1('MDS Winary Dashboard', style={
+    html.H1('MDS Winery Dashboard', style={
          'textAlign': 'center',
          'color': '#522889', 'font-size': '27px', 'text-decoration': 'underline'
 
@@ -140,7 +140,7 @@ app.layout = dbc.Container([
                     id = 'highest_value'),
                 ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%','padding-top': '2%', 'padding-right': '10%', 'height': '180px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
                 'color': '#ffff', 'font-size': '7px'}),  
-            html.Br(),    # Random spacing added to make the layout more realistic... we should delete at some point 
+            html.Br(),     
             dbc.Row([
                 dbc.Col([
                     html.H5(['Highest Wine Score:']),
@@ -297,7 +297,7 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
         tooltip='title').interactive()
     
     chart2 = alt.Chart(df_filtered, title = 'Average Price of Selection').mark_bar().encode(
-        y = alt.Y('price', title='Average Price ($)'),
+        y = alt.Y('mean(price)', title='Average Price ($)'),
         x = alt.X('variety', scale=alt.Scale(zero=False), axis=alt.Axis(labelAngle= -45),),
         color = 'variety',
     )
