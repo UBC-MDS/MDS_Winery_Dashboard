@@ -42,9 +42,9 @@ app.layout = dbc.Container([
    
 
     dcc.Tabs([
-        dcc.Tab( label='Winary Dashboard'),
+        dcc.Tab( label='Winery Dashboard'),
         dcc.Tab( label='Data')]),
-    html.H1('MDS Winary Dashboard', style={
+    html.H1('MDS Winery Dashboard', style={
          'textAlign': 'center',
          'color': '#522889', 'font-size': '27px', 'text-decoration': 'underline'
 
@@ -68,6 +68,7 @@ app.layout = dbc.Container([
                 id='province-widget',
                 value='select your state',  
                 options=[{'label': state, 'value': state} for state in df['state'].unique()],
+                multi=True,
                 placeholder='Select a State'
             ),
             html.Label(['Wine Type'], style={
@@ -78,7 +79,7 @@ app.layout = dbc.Container([
                 id='wine_variety',
                 value='select a variety', 
                 placeholder='Select a Variety', 
-                #multi=True
+                multi=True
             ),
             html.Br(),
             html.Label(['Price Range'], style={
@@ -137,18 +138,19 @@ app.layout = dbc.Container([
                 html.Br(),
                 html.H4(
                     id = 'highest_value'),
-                ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%', 'padding-right': '10%', 'height': '130px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
+                ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%','padding-top': '2%', 'padding-right': '10%', 'height': '180px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
                 'color': '#ffff', 'font-size': '7px'}),  
-            html.Br(),    # Random spacing added to make the layout more realistic... we should delete at some point 
+            html.Br(),     
             dbc.Row([
                 dbc.Col([
                     html.H5(['Highest Wine Score:']),
                     html.Br(),
                     html.H5(
                         id='highest_score_name'),
+                    html.Br(),
                     html.H4(
                         id='highest_score'),
-                ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%', 'padding-right': '10%', 'height': '130px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
+                ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%', 'padding-top': '2%','padding-right': '10%', 'height': '180px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
                 'color': '#ffff', 'font-size': '7px'}),
                 ])
             ])
@@ -163,11 +165,17 @@ def max_score(wine_type, state):
     if state == 'select your state':
         return None
     else:
-        df_filtered = df[df['state'] == state]
-    if wine_type == 'select a variety':
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
+    if wine_type == 'select a variety' or wine_type is None:
         return None
     else: 
-        df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+        if type(wine_type) == list:
+            df_filtered = df_filtered[df_filtered['variety'].isin(wine_type)]
+        else:  
+            df_filtered = df_filtered.query("variety == @wine_type")  
     max_points = max(df_filtered['points'])
     df_filtered = df[df['points'] == max_points]
     wine_name = df_filtered['title'].iloc[0]
@@ -179,15 +187,21 @@ def max_score(wine_type, state):
     Output('highest_score_name', 'children'),
     Input('wine_variety', 'value'),
     Input('province-widget', 'value'))
-def max_score(wine_type, state):
+def max_score_name(wine_type, state):
     if state == 'select your state':
         return None
     else:
-        df_filtered = df[df['state'] == state]
-    if wine_type == 'select a variety':
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
+    if wine_type == 'select a variety' or wine_type is None:
         return None
     else: 
-        df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+        if type(wine_type) == list:
+            df_filtered = df_filtered[df_filtered['variety'].isin(wine_type)]
+        else:  
+            df_filtered = df_filtered.query("variety == @wine_type") 
     max_points = max(df_filtered['points'])
     df_filtered = df[df['points'] == max_points]
     wine_name = df_filtered['title'].iloc[0]
@@ -202,11 +216,17 @@ def max_value_name(wine_type, state):
     if state == 'select your state':
         return None
     else:
-        df_filtered = df[df['state'] == state]
-    if wine_type == 'select a variety':
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
+    if wine_type == 'select a variety' or wine_type is None:
         return None
     else: 
-        df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+        if type(wine_type) == list:
+            df_filtered = df_filtered[df_filtered['variety'].isin(wine_type)]
+        else:  
+            df_filtered = df_filtered.query("variety == @wine_type")  
     max_value = max(df_filtered['value'])
     df_filtered = df[df['value'] == max_value]
     wine_name = df_filtered['title'].iloc[0]
@@ -220,11 +240,17 @@ def max_value(wine_type, state):
     if state == 'select your state':
         return None
     else:
-        df_filtered = df[df['state'] == state]
-    if wine_type == 'select a variety':
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
+    if wine_type == 'select a variety' or wine_type is None:
         return None
     else: 
-        df_filtered = df_filtered[df_filtered['variety'] == wine_type]
+        if type(wine_type) == list:
+            df_filtered = df_filtered[df_filtered['variety'].isin(wine_type)]
+        else:  
+            df_filtered = df_filtered.query("variety == @wine_type") 
     max_value = max(df_filtered['value'])
     df_filtered = df[df['value'] == max_value]
     return str(str(round(max_value, 2)))
@@ -236,7 +262,10 @@ def wine_options(state):
     if state == 'select your state':
         df_filtered = df
     else:
-        df_filtered = df[df['state'] == state]
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
     return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
 
 @app.callback(
@@ -249,10 +278,18 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
     if selected_province == 'select your state':
         df_filtered = df
     else:
-        df_filtered = df[df['state'] == selected_province]
+        if type(selected_province) == list:
+            df_filtered = df[df['state'].isin(selected_province)]
+        else:
+            df_filtered = df[df['state'] == selected_province]
+    if type(wine_variety) == list:
+        df_filtered = df_filtered[df_filtered['variety'].isin(wine_variety)]
+    else:  
+        df_filtered = df_filtered.query("variety == @wine_variety")   
+
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
-    df_filtered = df_filtered.query("variety == @wine_variety")
+    
     chart1 = alt.Chart(df_filtered).mark_point().encode(
         x=alt.X('price', scale=alt.Scale(zero=False)),
         y=alt.Y('points', scale=alt.Scale(zero=False)),
@@ -260,7 +297,7 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
         tooltip='title').interactive()
     
     chart2 = alt.Chart(df_filtered, title = 'Average Price of Selection').mark_bar().encode(
-        y = alt.Y('price', title='Average Price ($)'),
+        y = alt.Y('mean(price)', title='Average Price ($)'),
         x = alt.X('variety', scale=alt.Scale(zero=False), axis=alt.Axis(labelAngle= -45),),
         color = 'variety',
     )
@@ -274,11 +311,14 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
     Input('price', 'value'),
     Input('points', 'value'),
      Input('wine_variety', 'value'))
-def plot_altair(selected_province, price_value, points_value,wine_variety):
-    if selected_province == 'select your state':
+def plot_altair(state, price_value, points_value,wine_variety):
+    if state == 'select your state':
         df_filtered = df
     else:
-        df_filtered = df[df['state'] == selected_province]
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
 
     state_map = alt.topo_feature(data.us_10m.url, 'states')
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
