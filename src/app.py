@@ -3,6 +3,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 import altair as alt
 import pandas as pd
+import dash_table
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from vega_datasets import data
@@ -10,8 +11,9 @@ from vega_datasets import data
 alt.data_transformers.disable_max_rows()
 
 df = pd.read_csv('data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
-df = df.query('country == "US" ') 
-    
+df = df.query('country == "US"') 
+display_df = df[['title', 'variety', 'state', 'points', 'price']]
+display_df = display_df.rename(mapper={'Title':"title"})
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
 server=app.server
 colors = {
@@ -39,123 +41,201 @@ colors = {
 # ])
 
 app.layout = dbc.Container([
-   
-
-    dcc.Tabs([
-        dcc.Tab( label='Winery Dashboard'),
-        dcc.Tab( label='Data')]),
-    html.H1('MDS Winery Dashboard', style={
+   html.H1('MDS Winery Dashboard', style={
          'textAlign': 'center',
          'color': '#522889', 'font-size': '27px', 'text-decoration': 'underline'
 
-      }
-), 
-    dbc.Row([
-        dbc.Col([
-            html.Br(),
-            # html.Label([
-            #     'Country Selection']),
-            # dcc.Dropdown(
-            #     options=[{'label': country, 'value': country} for country in df['country'].unique()],
-            #     placeholder='Select a Country', 
-            #     multi=True
-            # ),
-            html.Label([
-                'State Selection'], style={
-         'color': '#7a4eb5', "font-weight": "bold"
-      }),
-            dcc.Dropdown(
-                id='province-widget',
-                value='select your state',  
-                options=[{'label': state, 'value': state} for state in df['state'].unique()],
-                multi=True,
-                placeholder='Select a State'
-            ),
-            html.Label(['Wine Type'], style={
-         'color': '#7a4eb5', "font-weight": "bold"
-      }
-            ),
-            dcc.Dropdown(
-                id='wine_variety',
-                value='select a variety', 
-                placeholder='Select a Variety', 
-                multi=True
-            ),
-            html.Br(),
-            html.Label(['Price Range'], style={
-         'color': '#7a4eb5', "font-weight": "bold"
-      }
-            ),
-            dcc.RangeSlider(
-                id='price',
-                min=df['price'].min(),
-                max=df['price'].max(),
-                value=[df['price'].min(), df['price'].max()],
-                marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100','color': '#7a4eb5'}
-            ),
-            html.Label(['Points Range'], style={
-         'color': '#7a4eb5', "font-weight": "bold"
-      }
-            ),
-            dcc.RangeSlider(
-                id='points',
-                min=df['points'].min(),
-                max=df['points'].max(),
-                value=[df['points'].min(), df['points'].max()],
-                marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
-                ),
-            html.Label(['Value Ratio'], style={
-         'color': '#7a4eb5', "font-weight": "bold"
-      }
-            ),
-            dcc.RangeSlider(min=0, 
-                max=1, 
-                step=0.1, 
-                value=[0.2,0.6], 
-                marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
-            ),
-            ], md=4,
-           ),
-        dbc.Col([
-            html.Iframe(
-                id = 'maps',
-                style={'border-width': '0', 'width': '100%', 'height': '460px'})
-            ], md=8)
-        ]),
-    dbc.Row([
-        dbc.Col([
-            html.Iframe(
-                id = 'plots',
-                style={'border-width': '0', 'width': '100%', 'height': '500px'})
-            ], md=8),
-        dbc.Col([
-            html.Br(),
-            dbc.Row([
-                html.H5(['Highest Value Wine:']),
-                html.Br(),
-                html.H5(
-                    id = 'highest_value_name'),
-                html.Br(),
-                html.H4(
-                    id = 'highest_value'),
-                ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%','padding-top': '2%', 'padding-right': '10%', 'height': '180px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
-                'color': '#ffff', 'font-size': '7px'}),  
-            html.Br(),     
+      }), 
+
+    dcc.Tabs([
+        dcc.Tab([
             dbc.Row([
                 dbc.Col([
-                    html.H5(['Highest Wine Score:']),
                     html.Br(),
-                    html.H5(
-                        id='highest_score_name'),
+                    # html.Label([
+                    #     'Country Selection']),
+                    # dcc.Dropdown(
+                    #     options=[{'label': country, 'value': country} for country in df['country'].unique()],
+                    #     placeholder='Select a Country', 
+                    #     multi=True
+                    # ),
+                    html.Label([
+                        'State Selection'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }),
+                    dcc.Dropdown(
+                        id='province-widget',
+                        value='select your state',  
+                        options=[{'label': state, 'value': state} for state in df['state'].unique()],
+                        multi=True,
+                        placeholder='Select a State'
+                    ),
+                    html.Label(['Wine Type'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.Dropdown(
+                        id='wine_variety',
+                        value='select a variety', 
+                        placeholder='Select a Variety', 
+                        multi=True
+                    ),
                     html.Br(),
-                    html.H4(
-                        id='highest_score'),
-                ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%', 'padding-top': '2%','padding-right': '10%', 'height': '180px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
-                'color': '#ffff', 'font-size': '7px'}),
-                ])
-            ])
-        ]),
+                    html.Label(['Price Range'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.RangeSlider(
+                        id='price',
+                        min=df['price'].min(),
+                        max=df['price'].max(),
+                        value=[df['price'].min(), df['price'].max()],
+                        marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100','color': '#7a4eb5'}
+                    ),
+                    html.Label(['Points Range'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.RangeSlider(
+                        id='points',
+                        min=df['points'].min(),
+                        max=df['points'].max(),
+                        value=[df['points'].min(), df['points'].max()],
+                        marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
+                        ),
+                    html.Label(['Value Ratio'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.RangeSlider(min=0, 
+                        max=1, 
+                        step=0.1, 
+                        value=[0.2,0.6], 
+                        marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
+                    ),
+                    ], md=4,
+                ),
+                dbc.Col([
+                    html.Iframe(
+                        id = 'maps',
+                        style={'border-width': '0', 'width': '100%', 'height': '460px'})
+                    ], md=8)
+                ]),
+            dbc.Row([
+                dbc.Col([
+                    html.Iframe(
+                        id = 'plots',
+                        style={'border-width': '0', 'width': '100%', 'height': '500px'})
+                    ], md=8),
+                dbc.Col([
+                    html.Br(),
+                    dbc.Row([
+                        html.H5(['Highest Value Wine:']),
+                        html.Br(),
+                        html.H5(
+                            id = 'highest_value_name'),
+                        html.Br(),
+                        html.H4(
+                            id = 'highest_value'),
+                        ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%','padding-top': '2%', 'padding-right': '10%', 'height': '180px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
+                        'color': '#ffff', 'font-size': '7px'}),  
+                    html.Br(),     
+                    dbc.Row([
+                        dbc.Col([
+                            html.H5(['Highest Wine Score:']),
+                            html.Br(),
+                            html.H5(
+                                id='highest_score_name'),
+                            html.Br(),
+                            html.H4(
+                                id='highest_score'),
+                        ], style={'border': '1px solid #d3d3d3', 'padding-left': '10%', 'padding-top': '2%','padding-right': '10%', 'height': '180px', 'border': '1px solid', 'backgroundColor' : '#3c1a69', 
+                        'color': '#ffff', 'font-size': '7px'}),
+                        ])
+                    ])
+                ]),
+            ], label='MDS Winery'),
+        dcc.Tab([
+            dbc.Row([
+                dbc.Col([
+                    html.Br(),
+                    # html.Label([
+                    #     'Country Selection']),
+                    # dcc.Dropdown(
+                    #     options=[{'label': country, 'value': country} for country in df['country'].unique()],
+                    #     placeholder='Select a Country', 
+                    #     multi=True
+                    # ),
+                    html.Label([
+                        'State Selection'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }),
+                    dcc.Dropdown(
+                        id='table_state',
+                        value='select your state',  
+                        options=[{'label': state, 'value': state} for state in df['state'].unique()],
+                        multi=True,
+                        placeholder='Select a State'
+                    ),
+                    html.Label(['Wine Type'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.Dropdown(
+                        id='table_variety',
+                        value='select a variety', 
+                        placeholder='Select a Variety', 
+                        multi=True
+                    ),
+                    html.Br(),
+                    html.Label(['Price Range'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.RangeSlider(
+                        id='table_price',
+                        min=df['price'].min(),
+                        max=df['price'].max(),
+                        value=[df['price'].min(), df['price'].max()],
+                        marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100','color': '#7a4eb5'}
+                    ),
+                    html.Label(['Points Range'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.RangeSlider(
+                        id='table_points',
+                        min=df['points'].min(),
+                        max=df['points'].max(),
+                        value=[df['points'].min(), df['points'].max()],
+                        marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
+                        ),
+                    html.Label(['Value Ratio'], style={
+                'color': '#7a4eb5', "font-weight": "bold"
+            }
+                    ),
+                    dcc.RangeSlider(min=0, 
+                        max=1, 
+                        step=0.1, 
+                        value=[0.2,0.6], 
+                        marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
+                    ),
+                ], md=4,),
+                dbc.Col([
+                    html.Br(),
+                    dash_table.DataTable(
+                        id='table',
+                        columns=[{"name": col, "id": col} for col in display_df.columns[:]], 
+                        data=display_df.to_dict('records'),
+                        page_size=11,
+                        style_header = {'textAlign': 'left'},
+                        style_data = {'textAlign': 'left'}
+                    ),
+                ], md=8)
+            ])     
+        ],label='Data')]),
 ])
+    
 
 @app.callback(
     Output('highest_score', 'children'),
@@ -256,7 +336,7 @@ def max_value(wine_type, state):
     return str(str(round(max_value, 2)))
   
 @app.callback(
-    Output('wine_variety', 'options'),
+    Output('table_variety', 'options'),
     Input('province-widget', 'value'))
 def wine_options(state):
     if state == 'select your state':
@@ -266,7 +346,21 @@ def wine_options(state):
             df_filtered = df[df['state'].isin(state)]
         else:
             df_filtered = df[df['state'] == state]
+            
     return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
+
+@app.callback(
+    Output('wine_variety', 'options'),
+    Input('table_state', 'value'))
+def wine_options(state):
+    if state == 'select your state':
+        df_filtered = df
+    else:
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
+
 
 @app.callback(
     Output('plots', 'srcDoc'),
@@ -310,8 +404,8 @@ def plot_altair(selected_province, price_value, points_value, wine_variety):
     Input('province-widget', 'value'),
     Input('price', 'value'),
     Input('points', 'value'),
-     Input('wine_variety', 'value'))
-def plot_altair(state, price_value, points_value,wine_variety):
+    Input('wine_variety', 'value'))
+def plot_map(state, price_value, points_value,wine_variety):
     if state == 'select your state':
         df_filtered = df
     else:
@@ -378,6 +472,31 @@ def plot_altair(state, price_value, points_value,wine_variety):
                 fill=None,
                 stroke=None)
     return chart.to_html()
+
+@app.callback(
+    Output('table', 'data'),
+    Input('table_state', 'value'),
+    Input('table_price', 'value'),
+    Input('table_points', 'value'),
+    Input('table_variety', 'value'))
+def function(state, price, points, variety):
+    if state == 'select your state':
+        df_filtered = display_df
+    else:
+        if type(state) == list:
+            df_filtered = df[df['state'].isin(state)]
+        else:
+            df_filtered = df[df['state'] == state]
+    if type(variety) == list:
+        df_filtered = df_filtered[df_filtered['variety'].isin(variety)]
+    else:  
+        df_filtered = df_filtered.query("variety == @variety")   
+
+    df_filtered = df_filtered[(df_filtered['price'] >= min(price)) & (df_filtered['price'] <= max(price))]
+    df_filtered = df_filtered[(df_filtered['points'] >= min(points)) & (df_filtered['points'] <= max(points))]
+   
+    return df_filtered.to_dict('records')
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
