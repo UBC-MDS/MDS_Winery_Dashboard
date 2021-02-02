@@ -5,7 +5,7 @@ import altair as alt
 import pandas as pd
 import dash_table
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
@@ -17,10 +17,36 @@ display_df = df[['title', 'variety', 'state', 'points', 'price']]
 display_df = display_df.rename(columns={'title': 'Title', 'variety':'Variety', 'state':'State', 'points':'Points', 'price':'Price'})
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
 server=app.server
+
 colors = {
     'background': '#111111',
     'text': '#522889'
 }
+
+collapse = html.Div(
+    [
+        dbc.Button(
+            "Learn more",
+            id="collapse-button",
+            className="mb-3",
+            outline=False,
+            style={'margin-top': '10px',
+                'width': '150px',
+                'background-color': 'white',
+                'color': 'steelblue'}
+        ),
+    ]
+)
+
+@app.callback(
+    Output("collapse", "is_open"),
+    [Input("collapse-button", "n_clicks")],
+    [State("collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
 # header = html.Div(children=[
 #     html.Div(
@@ -42,11 +68,23 @@ colors = {
 # ])
 
 app.layout = dbc.Container([
-   html.H1('MDS Winery Dashboard', style={
-         'textAlign': 'center',
-         'color': '#522889', 'font-size': '27px', 'text-decoration': 'underline'
+    dbc.Row([
+        dbc.Col([
+            html.H1('MDS Winery Dashboard', style={'text-align': 'center', 'color': '#522889', 'font-size': '40px', 'font-family': 'Georgia'}),
+            dbc.Collapse(html.P(
+                """
+                Let me introduce our MDS winery dashboard to you =)
+                """,
+                style={'color': 'white', 'width': '55%'}
+            ), id='collapse'),
+        ], md=10),
+        dbc.Col([collapse])
+    ], style={'backgroundColor': '#E4C8EB', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 11}),
+#    html.H1('MDS Winery Dashboard', style={
+#          'textAlign': 'center',
+#          'color': '#522889', 'font-size': '27px', 'text-decoration': 'underline'
 
-      }), 
+#       }), 
 
     dcc.Tabs([
         dcc.Tab([
@@ -351,7 +389,7 @@ def wine_options(state):
         if type(state) == list:
             df_filtered = df[df['state'].isin(state)]
         else:
-            df_filtered = df[df['state'] == state]     
+            df_filtered = df[df['state'] == state]
     return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
 
 @app.callback(
