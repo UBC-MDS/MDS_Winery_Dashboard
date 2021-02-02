@@ -14,7 +14,9 @@ df = pd.read_csv('data/processed/cleaned_data.csv') #data/processed/cleaned_data
 df = df.query('country == "US"') 
 display_df = df[['title', 'variety', 'state', 'points', 'price']]
 display_df = display_df.rename(mapper={'Title':"title"})
+
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 server=app.server
 
 colors = {
@@ -69,14 +71,14 @@ def toggle_collapse(n, is_open):
 app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
-            html.H1('MDS Winery Dashboard', style={'text-align': 'center', 'color': '#522889', 'font-size': '40px', 'font-family': 'Georgia'}),
+            html.H1('MDS WINERY DASHBOARD', style={'text-align': 'center', 'color': '#522889', 'font-size': '40px', 'font-family': 'Open Sans'}),
             dbc.Collapse(html.P(
                 """
                 Let me introduce our MDS winery dashboard to you =)
                 """,
-                style={'color': 'white', 'width': '55%'}
+                style={'color': '#522889', 'width': '55%'}
             ), id='collapse'),
-        ], md=10),
+        ], md=12),
         dbc.Col([collapse])
     ], style={'backgroundColor': '#E4C8EB', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 11}),
 #    html.H1('MDS Winery Dashboard', style={
