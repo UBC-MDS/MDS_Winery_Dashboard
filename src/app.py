@@ -5,9 +5,6 @@ import altair as alt
 import pandas as pd
 import dash_table
 import dash_bootstrap_components as dbc
-import pathlib
-import numpy as np
-
 from dash.dependencies import Input, Output, State
 from vega_datasets import data
 
@@ -22,20 +19,16 @@ alt.data_transformers.disable_max_rows()
 
 df = pd.read_csv('data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
 df = df.query('country == "US"') 
+df['title'] = df['title'].str.split('(',expand=True)
 display_df = df[['title', 'variety', 'state', 'points', 'price']]
-display_df = display_df.rename(mapper={'Title':"title"})
-
-app = dash.Dash(__name__ , 
-
-external_stylesheets=[dbc.themes.BOOTSTRAP]
-)
-
+display_df = display_df.rename(columns={'title': 'Title', 'variety':'Variety', 'state':'State', 'points':'Points', 'price':'Price'})
+app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
 server=app.server
 
-# colors = {
-#     'background': '#111111',
-#     'text': '#522889'
-# }
+colors = {
+    'background': '#111111',
+    'text': '#522889'
+}
 
 collapse = html.Div(
     [
@@ -125,9 +118,7 @@ app.layout = dbc.Container([
                         multi=True,
                         placeholder='Select a State'
                     ),
-                    html.Label(['Wine Type'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
-            }
+                    html.Label(['Wine Type'], style={'color': '#7a4eb5', "font-weight": "bold"}
                     ),
                     dcc.Dropdown(
                         id='wine_variety',
@@ -278,16 +269,23 @@ app.layout = dbc.Container([
                 ], md=4,),
                 dbc.Col([
                     html.Br(),
+                    html.Br(),
                     dash_table.DataTable(
                         id='table',
                         columns=[{"name": col, "id": col} for col in display_df.columns[:]], 
                         data=display_df.to_dict('records'),
                         page_size=11,
+                        sort_action='native',
                         style_header = {'textAlign': 'left'},
-                        style_data = {'textAlign': 'left'}
+                        style_data = {'textAlign': 'left'},
                     ),
                 ], md=8)
-            ])     
+            ]),
+            dbc.Row([
+                html.Iframe(
+                        id = 'table_plots',
+                        style={'border-width': '0', 'width': '100%', 'height': '500px'})
+                ])     
         ],label='Data')]),
 ])
     
@@ -401,7 +399,6 @@ def wine_options(state):
             df_filtered = df[df['state'].isin(state)]
         else:
             df_filtered = df[df['state'] == state]
-    
     return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
 
 @app.callback(
@@ -535,23 +532,65 @@ def plot_map(state, price_value, points_value,wine_variety):
     Input('table_price', 'value'),
     Input('table_points', 'value'),
     Input('table_variety', 'value'))
-def function(state, price, points, variety):
+def table(state, price, points, variety):
     if state == 'select your state':
         df_filtered = display_df
     else:
         if type(state) == list:
-            df_filtered = df[df['state'].isin(state)]
+            df_filtered = display_df[display_df['State'].isin(state)]
         else:
-            df_filtered = df[df['state'] == state]
+            df_filtered = display_df[display_df['State'] == state]
     if type(variety) == list:
-        df_filtered = df_filtered[df_filtered['variety'].isin(variety)]
+        df_filtered = df_filtered[df_filtered['Variety'].isin(variety)]
     else:  
-        df_filtered = df_filtered.query("variety == @variety")   
+        df_filtered = df_filtered.query("Variety == @variety")   
 
-    df_filtered = df_filtered[(df_filtered['price'] >= min(price)) & (df_filtered['price'] <= max(price))]
-    df_filtered = df_filtered[(df_filtered['points'] >= min(points)) & (df_filtered['points'] <= max(points))]
+    df_filtered = df_filtered[(df_filtered['Price'] >= min(price)) & (df_filtered['Price'] <= max(price))]
+    df_filtered = df_filtered[(df_filtered['Points'] >= min(points)) & (df_filtered['Points'] <= max(points))]
    
     return df_filtered.to_dict('records')
+
+@app.callback(
+    Output('table_plots', 'srcDoc'),
+    Input('table_state', 'value'),
+    Input('table_price', 'value'),
+    Input('table_points', 'value'),
+    Input('table_variety', 'value'))
+def table_plot(selected_province, price_value, points_value, wine_variety):
+    if selected_province == 'select your state':
+        df_filtered = df
+    else:
+        if type(selected_province) == list:
+            df_filtered = df[df['state'].isin(selected_province)]
+        else:
+            df_filtered = df[df['state'] == selected_province]
+    if type(wine_variety) == list:
+        df_filtered = df_filtered[df_filtered['variety'].isin(wine_variety)]
+    else:  
+        df_filtered = df_filtered.query("variety == @wine_variety")   
+
+    df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
+    df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
+    
+    chart = alt.Chart(df_filtered).mark_point().encode(
+        x=alt.X('price', scale=alt.Scale(zero=False)),
+        y=alt.Y('points', scale=alt.Scale(zero=False)),
+        color = alt.Color('variety', scale=alt.Scale(scheme='bluepurple')),
+        tooltip='title').interactive()
+    
+    return chart.to_html()
+
+@app.callback(
+    Output('table_state', 'value'),
+    Output('table_variety', 'value'),
+    Output('table_points', 'value'),
+    Output('table_price', 'value'),
+    Input('province-widget', 'value'),
+    Input('wine_variety', 'value'),
+    Input('points', 'value'),
+    Input('price', 'value'))
+def cross_tab_update_price(state, variety, points, price):
+    return state, variety, points, price
 
 
 if __name__ == '__main__':
