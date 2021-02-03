@@ -124,7 +124,7 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id='province-widget',
                         value='select your state',  
-                        options=[{'label': state, 'value': state} for state in df['state'].unique()],
+                        options=[{'label': state, 'value': state} for state in df.state.sort_values().unique()],
                         multi=True,
                         placeholder='Select a State'
                     ),
@@ -227,7 +227,7 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id='table_state',
                         value='Oregon',  
-                        options=[{'label': state, 'value': state} for state in df['state'].unique()],
+                        options=[{'label': state, 'value': state} for state in df.state.sort_values().unique()],
                         multi=True,
                         placeholder='Select a State'
                     ),
@@ -411,7 +411,7 @@ def wine_options(state):
             df_filtered = df[df['state'].isin(state)]
         else:
             df_filtered = df[df['state'] == state]
-    return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
+    return [{'label': variety, 'value': variety} for variety in df_filtered.variety.sort_values().unique()]
 
 @app.callback(
     Output('table_variety', 'options'),
@@ -424,7 +424,7 @@ def wine_options(state):
             df_filtered = df[df['state'].isin(state)]
         else:
             df_filtered = df[df['state'] == state]
-    return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
+    return [{'label': variety, 'value': variety} for variety in df_filtered.variety.sort_values().unique()]
 
 
 @app.callback(
