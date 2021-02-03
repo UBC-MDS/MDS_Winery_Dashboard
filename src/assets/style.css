@@ -1,0 +1,12 @@
+body {
+    font-family: "Open Sans", sans-serif;
+    background-color: "#061E44"
+}
+
+.app__header__title {
+    letter-spacing: .25rem;
+}
+
+.app__header__title--grey {
+    color: #C4CDD5;
+}

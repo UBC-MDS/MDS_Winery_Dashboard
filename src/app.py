@@ -5,24 +5,37 @@ import altair as alt
 import pandas as pd
 import dash_table
 import dash_bootstrap_components as dbc
+import pathlib
+import numpy as np
+
 from dash.dependencies import Input, Output, State
 from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
+
+# # Path
+# BASE_PATH = pathlib.Path(__file__).parent.parent.resolve()
+# DATA_PATH = BASE_PATH.joinpath('data').resolve()
+
+# #Read data
+# df = pd.read_csv(DATA_PATH.joinpath('processed', 'cleaned_data.csv'))
 
 df = pd.read_csv('data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
 df = df.query('country == "US"') 
 display_df = df[['title', 'variety', 'state', 'points', 'price']]
 display_df = display_df.rename(mapper={'Title':"title"})
 
-app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__ , 
+
+external_stylesheets=[dbc.themes.BOOTSTRAP]
+)
 
 server=app.server
 
-colors = {
-    'background': '#111111',
-    'text': '#522889'
-}
+# colors = {
+#     'background': '#111111',
+#     'text': '#522889'
+# }
 
 collapse = html.Div(
     [
@@ -71,16 +84,18 @@ def toggle_collapse(n, is_open):
 app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
-            html.H1('MDS WINERY DASHBOARD', style={'text-align': 'center', 'color': '#522889', 'font-size': '40px', 'font-family': 'Open Sans'}),
+            html.H1('MDS WINERY DASHBOARD', className="app__header__title"),
             dbc.Collapse(html.P(
                 """
                 Let me introduce our MDS winery dashboard to you =)
                 """,
-                style={'color': '#522889', 'width': '55%'}
-            ), id='collapse'),
-        ], md=12),
+                className="app__header__title--grey",
+            ), 
+            id='collapse'),
+        ], 
+        md=12),
         dbc.Col([collapse])
-    ], style={'backgroundColor': '#E4C8EB', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 11}),
+    ], style={'backgroundColor': '#E4C8EB', 'border-radius': 5, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 11}),
 #    html.H1('MDS Winery Dashboard', style={
 #          'textAlign': 'center',
 #          'color': '#522889', 'font-size': '27px', 'text-decoration': 'underline'
