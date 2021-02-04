@@ -78,13 +78,6 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H1('MDS WINERY DASHBOARD', className="app__header__title"),
-            # dbc.Collapse(html.P(
-            #     """
-            #     Let me introduce our MDS winery dashboard to you =)
-            #     """,
-            #     className="app__header__title--grey",
-            # ), 
-            # id='collapse'),
         ], 
         md=12),
         html.Br(),
@@ -98,13 +91,13 @@ app.layout = dbc.Container([
                 className="app__header__title--grey",
             ), 
             id='collapse')])
-    ], style={'backgroundColor': '#BD93D3', 'border-radius': 5, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 11}),
+    ], className="banner"),
 #    html.H1('MDS Winery Dashboard', style={
 #          'textAlign': 'center',
 #          'color': '#522889', 'font-size': '27px', 'text-decoration': 'underline'
 
 #       }), 
-
+    html.Br(),
     dcc.Tabs([
         dcc.Tab([
             dbc.Row([
@@ -258,12 +251,13 @@ app.layout = dbc.Container([
                 'color': '#7a4eb5', "font-weight": "bold"
             }
                     ),
+                    
                     dcc.RangeSlider(
                         id='table_points',
                         min=df['points'].min(),
                         max=df['points'].max(),
                         value=[df['points'].min(), df['points'].max()],
-                        marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
+                        marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}, className='slider'
                         ),
                     html.Label(['Value Ratio'], style={
                 'color': '#7a4eb5', "font-weight": "bold"
@@ -275,6 +269,10 @@ app.layout = dbc.Container([
                         value=[0.2,0.6], 
                         marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
                     ),
+                    html.Br(),
+                    html.Button(id="reset-btn_tbl", children="RESET", n_clicks=0)
+
+
                 ], md=4,),
                 dbc.Col([
                     html.Br(),
@@ -689,6 +687,14 @@ def cross_tab_update_price(state, variety, points, price):
 def resetAll(n_clicks):
     if n_clicks > 0:
         return (['select your state'])
+
+# @app.callback(
+#     Output('table_state', 'value'),
+#     [Input('reset-btn_tbl', 'n_clicks')],
+# )
+# def reset_tbl(n_clicks):
+#     if n_clicks > 0:
+#         return None
 
 
 if __name__ == '__main__':
