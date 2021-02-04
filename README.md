@@ -8,14 +8,15 @@ https://mds-winery-2020.herokuapp.com/
 This dashboard allows you to explore wine varieties, price and rating information by the winery locations across United States. By comparing the selected wine products, customers are able to make their wise purchase based on informative and interactive bar charts.
 
 
-## Team Roster (Group Six)
-Jianru Deng
+## Authors
 
-Mo Garoub
+* **Jianru Deng** -[@jianridine](https://github.com/jianridine)
 
-Kamal Moravej Jahromi
+* **Mo Garoub** -[@mgaroub](https://github.com/mgaroub)
 
-Neel Phaterpekar
+* **Kamal Moravej Jahromi** -[@kmoravej](https://github.com/kmoravej)
+
+* **Neel Phaterpekar** -[@nphaterp](https://github.com/nphaterp)
 
 ## Description of the App & Sketch
 
