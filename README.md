@@ -1,10 +1,14 @@
-# MDS_Winery_Dashboard
+# MDS Winery Dashboard
+
+## About this app
 
 The link to the deployed dashboard:
 https://mds-winery-2020.herokuapp.com/
 
+This dashboard allows you to explore wine varieties, price and rating information by the winery locations across United States. By comparing the selected wine products, customers are able to make their wise purchase based on informative and interactive bar charts.
 
-#### Team members of group 6
+
+## Team Roster (Group Six)
 Jianru Deng
 
 Mo Garoub
@@ -21,5 +25,42 @@ This dashboard is designed to have three main graphs on the home page. Using the
 ![](https://media.giphy.com/media/v0C45RM0xAzD1n3Ei8/giphy.gif)
 
 
+## Requirements
+- Python 3
+
+## How to run this app
+We suggest you to create a virtual environment for running this app with Python 3. Clone this repository and open your terminal/command prompt in the root folder.<br>
+
+```
+git clone https://github.com/UBC-MDS/MDS_Winery_Dashboard
+cd MDS_Winery_Dashboard/src
+python3 -m virtualenv venv
+
+```
+
+
+In Unix System:
+```
+source venv/bin/activate
+```
+
+In Windows:
+
+```
+venv\Scripts\activate
+```
+
+Install all required packages by running:
+
+```
+pip install -r requirements.txt
+```
+
+
+Run this app locally with:<br>
+```
+python app.py
+```
+
 ## Reference
-Thoutt, Z. (2018). Wine Reviews dataset. Retrived from: https://www.kaggle.com/zynicide/wine-reviews/data
+Thoutt, Z. (2018). [Wine Reviews dataset](https://www.kaggle.com/zynicide/wine-reviews/data).
