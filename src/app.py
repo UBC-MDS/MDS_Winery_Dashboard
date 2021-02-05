@@ -13,6 +13,9 @@ alt.data_transformers.disable_max_rows()
 df = pd.read_csv('data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
 df = df.query('country == "US"') 
 df['title'] = df['title'].str.split('(',expand=True)
+stats = df.groupby('variety').count()
+filter = list(stats.sort_values('title', ascending=False)[0:10].reset_index().loc[:,'variety'])
+df = df[df['variety'].isin(filter)].dropna(subset=['price', 'points', 'title'])
 display_df = df[['title', 'variety', 'state', 'points', 'price']]
 display_df = display_df.rename(columns={'title': 'Title', 'variety':'Variety', 'state':'State', 'points':'Points', 'price':'Price'})
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -117,16 +120,6 @@ app.layout = dbc.Container([
                         value=[df['points'].min(), df['points'].max()],
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
-                    html.Label(['Value Ratio'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
-            }
-                    ),
-                    dcc.RangeSlider(min=0, 
-                        max=1, 
-                        step=0.1, 
-                        value=[0.2,0.6], 
-                        marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
-                    ),
                     ], md=4,
                 ),
                 dbc.Col([
@@ -222,16 +215,6 @@ app.layout = dbc.Container([
                         value=[df['points'].min(), df['points'].max()],
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
-                    html.Label(['Value Ratio'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
-            }
-                    ),
-                    dcc.RangeSlider(min=0, 
-                        max=1, 
-                        step=0.1, 
-                        value=[0.2,0.6], 
-                        marks = {0: '0', 0.2: '0.2', 0.4: '0.4', 0.6: '0.6', 0.8: '0.8', 1: '1'}  
-                    ),
                 ], md=4,),
                 dbc.Col([
                     html.Br(),
@@ -240,10 +223,22 @@ app.layout = dbc.Container([
                         id='table',
                         columns=[{"name": col, "id": col} for col in display_df.columns[:]], 
                         data=display_df.to_dict('records'),
-                        page_size=11,
+                        page_size=8,
                         sort_action='native',
                         style_header = {'textAlign': 'left'},
                         style_data = {'textAlign': 'left'},
+                        style_cell_conditional=[
+                            {'if': {'column_id': 'Title'},
+                            'width': '50%'}],
+                        style_cell={
+                            'overflow': 'hidden',
+                            'textOverflow': 'ellipsis',
+                            'maxWidth': 0
+                        },
+                        # style_cell={
+                        #     'whiteSpace': 'normal',
+                        #     'height': 'auto',
+                        # },
                     ),
                 ], md=8)
             ]),
@@ -251,11 +246,11 @@ app.layout = dbc.Container([
                 dbc.Col([
                     html.Iframe(
                         id = 'table_plots',
-                        style={'border-width': '0', 'width': '100%', 'height': '500px'})]),
+                        style={'border-width': '0', 'width': '100%', 'height': '600px'})]),
                 dbc.Col([
                 html.Iframe(
                         id = 'heat_plot',
-                        style={'border-width': '0', 'width': '100%', 'height': '500px'})])
+                        style={'border-width': '0', 'width': '100%', 'height': '600px'})])
                 ])     
         ],label='Data')]),
 ])
@@ -286,7 +281,7 @@ def max_score(wine_variety, selected_state, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
     max_points = max(df_filtered['points'])
-    df_filtered = df[df['points'] == max_points]
+    df_filtered = df_filtered[df_filtered['points'] == max_points]
     wine_name = df_filtered['title'].iloc[0]
 
     return str(str(round(max_points,2)))
@@ -316,9 +311,11 @@ def max_score_name(wine_variety, selected_state, price_value, points_value):
 
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
+    
     max_points = max(df_filtered['points'])
-    df_filtered = df[df['points'] == max_points]
+    df_filtered = df_filtered[df_filtered['points'] == max_points]
     wine_name = df_filtered['title'].iloc[0]
+    
 
     return str(wine_name.split(' (')[0])
 
@@ -347,7 +344,7 @@ def max_value_name(wine_variety, selected_state, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
     max_value = max(df_filtered['value'])
-    df_filtered = df[df['value'] == max_value]
+    df_filtered = df_filtered[df_filtered['value'] == max_value]
     wine_name = df_filtered['title'].iloc[0]
     return (wine_name.split(' (')[0] + '     ')
 
@@ -377,12 +374,12 @@ def max_value(wine_variety, selected_state, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
 
     max_value = max(df_filtered['value'])
-    df_filtered = df[df['value'] == max_value]
+    df_filtered = df_filtered[df_filtered['value'] == max_value]
     return str(str(round(max_value, 2)))
   
 @app.callback(
     Output('table_variety', 'options'),
-    Input('province-widget', 'value'))
+    Input('table_state', 'value'))
 def wine_options(state):
     if state == 'select your state':
         df_filtered = df
@@ -395,7 +392,7 @@ def wine_options(state):
 
 @app.callback(
     Output('wine_variety', 'options'),
-    Input('table_state', 'value'))
+    Input('province-widget', 'value'))
 def wine_options(state):
     if state == 'select your state':
         df_filtered = df
@@ -466,7 +463,7 @@ def plot_altair(selected_state, price_value, points_value):
         max(new_data['price'])])),
         color=alt.Color('variety',scale=alt.Scale(scheme='bluepurple'), legend=None),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
-.add_selection(click)).properties(width=300, height=300) 
+.add_selection(click)).properties(width=300, height=300).interactive()
     chart = (ranked_bar1 | ranked_bar).configure_axisX(
                 labelAngle=60)
     return chart.to_html()
@@ -588,6 +585,7 @@ def table(state, price, points, variety):
 def table_plot(selected_state, price_value, points_value, wine_variety):
     if selected_state == 'select your state':
         df_filtered = df
+        return None
     else:
         if type(selected_state) == list:
             df_filtered = df[df['state'].isin(selected_state)]
@@ -595,6 +593,7 @@ def table_plot(selected_state, price_value, points_value, wine_variety):
             df_filtered = df[df['state'] == selected_state]
     # filterng data based on wine variety selection
     if wine_variety == 'select a variety':
+        return None
         df_filtered = df_filtered
     else:
         if type(wine_variety) == list:
@@ -605,31 +604,30 @@ def table_plot(selected_state, price_value, points_value, wine_variety):
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
     
     selection = alt.selection_multi(    
-            fields=['variety'], # limit selection to the Major_Genre field
-            bind='legend')
+            fields=['variety']) # limit selection to the Major_Genre field)
 
     select_price = alt.selection_interval(empty='all', encodings=['x'])
     select_points= alt.selection_interval(empty='all', encodings=['x'])
 
     multidim_legend = alt.Chart(df_filtered).mark_point(filled=True).encode(
-        x=alt.X('state'),
-        y=alt.Y('variety', axis=None),
+        x=alt.X('variety', axis=None),
+        y=alt.Y('state', title=''),
         size =alt.Size('count()', legend=None),
         color = alt.Color('variety'),
         opacity=alt.condition(selection, alt.value(1), alt.value(0.2))
-    ).add_selection(selection).properties(height=100, width=100)
+    ).add_selection(selection).properties(height=40, width=110)
 
     price_slider = alt.Chart(df_filtered).mark_bar().encode(
-    alt.X('price', title='', axis=alt.Axis(grid=False),
+    alt.X('price', title='Price $', axis=alt.Axis(grid=False),
           scale=alt.Scale(domain=[0, 110])),
     alt.Y('count()', title='', axis=None)
-    ).properties(height=40, width=100).add_selection(select_price)
+    ).properties(height=40, width=110).add_selection(select_price)
 
     points_slider = alt.Chart(df_filtered).mark_bar().encode(
-    alt.X('points', title='', axis=alt.Axis(grid=False),
+    alt.X('points', title='Points', axis=alt.Axis(grid=False),
           scale=alt.Scale(domain=[75, 105])),
     alt.Y('count()', title='', axis=None)
-    ).properties(height=40, width=100).add_selection(select_points)
+    ).properties(height=40, width=110).add_selection(select_points)
 
     # text = alt.Chart(df_filtered).mark_text().encode(
     #     y=alt.y('title',axis=None))
@@ -637,11 +635,11 @@ def table_plot(selected_state, price_value, points_value, wine_variety):
     chart1 = alt.Chart(df_filtered).mark_point().encode(
         x=alt.X('price', scale=alt.Scale(zero=False)),
         y=alt.Y('points', scale=alt.Scale(zero=False)),
-        color = alt.Color('variety'),#, scale=alt.Scale(scheme='bluepurple')),
+        color = alt.Color('variety', legend=alt.Legend(columns=3)),#, scale=alt.Scale(scheme='bluepurple')),
         opacity = alt.condition(select_price & select_points & selection, alt.value(0.5), alt.value(0)),
         tooltip='title').add_selection(selection).interactive()
     
-    chart = chart1|(price_slider & points_slider & multidim_legend)
+    chart = (chart1 & (multidim_legend | price_slider | points_slider )).configure_legend(orient='bottom')
 
     return chart.to_html()
 
