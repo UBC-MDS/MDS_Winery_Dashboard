@@ -208,13 +208,12 @@ app.layout = dbc.Container([
                 'color': '#7a4eb5', "font-weight": "bold"
             }
                     ),
-                    
                     dcc.RangeSlider(
                         id='table_points',
                         min=df['points'].min(),
                         max=df['points'].max(),
                         value=[df['points'].min(), df['points'].max()],
-                        marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}, className='slider'
+                        marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
                 ], md=4,),
                 dbc.Col([
@@ -700,14 +699,6 @@ def plot_heat(selected_state, price_value, points_value):
             labelAngle=0). properties(width=300, height=300)
     return varieties_heatmap_plot.to_html()
 
-
-# @app.callback(
-#     Output('table_state', 'value'),
-#     [Input('reset-btn_tbl', 'n_clicks')],
-# )
-# def reset_tbl(n_clicks):
-#     if n_clicks > 0:
-#         return None
 
 
 if __name__ == '__main__':
