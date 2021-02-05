@@ -10,14 +10,20 @@ from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
 
+########## Additional Data Filtering ###########################################
 df = pd.read_csv('data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
 df = df.query('country == "US"') 
+df = df.dropna(subset=['price', 'points', 'title'])
+df[['price']] = df[['price']].astype(int)
 df['title'] = df['title'].str.split('(',expand=True)
 stats = df.groupby('variety').count()
 filter = list(stats.sort_values('title', ascending=False)[0:10].reset_index().loc[:,'variety'])
 df = df[df['variety'].isin(filter)].dropna(subset=['price', 'points', 'title'])
 display_df = df[['title', 'variety', 'state', 'points', 'price']]
 display_df = display_df.rename(columns={'title': 'Title', 'variety':'Variety', 'state':'State', 'points':'Points', 'price':'Price'})
+###############################################################################
+
+
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
 server=app.server
 
@@ -71,13 +77,6 @@ app.layout = dbc.Container([
             dbc.Row([
                 dbc.Col([
                     html.Br(),
-                    # html.Label([
-                    #     'Country Selection']),
-                    # dcc.Dropdown(
-                    #     options=[{'label': country, 'value': country} for country in df['country'].unique()],
-                    #     placeholder='Select a Country', 
-                    #     multi=True
-                    # ),
                     html.Label([
                         'State Selection'], style={
                 'color': '#7a4eb5', "font-weight": "bold"
@@ -164,13 +163,6 @@ app.layout = dbc.Container([
             dbc.Row([
                 dbc.Col([
                     html.Br(),
-                    # html.Label([
-                    #     'Country Selection']),
-                    # dcc.Dropdown(
-                    #     options=[{'label': country, 'value': country} for country in df['country'].unique()],
-                    #     placeholder='Select a Country', 
-                    #     multi=True
-                    # ),
                     html.Label([
                         'State Selection'], style={
                 'color': '#7a4eb5', "font-weight": "bold"
@@ -226,11 +218,16 @@ app.layout = dbc.Container([
                         data=display_df.to_dict('records'),
                         page_size=8,
                         sort_action='native',
+                        filter_action='native',
                         style_header = {'textAlign': 'left'},
                         style_data = {'textAlign': 'left'},
                         style_cell_conditional=[
                             {'if': {'column_id': 'Title'},
-                            'width': '50%'}],
+                            'width': '50%'},
+                            {'if': {'column_id': 'Price'},
+                            'width': '9%'},
+                            {'if': {'column_id': 'Points'},
+                            'width': '10%'}],
                         style_cell={
                             'overflow': 'hidden',
                             'textOverflow': 'ellipsis',
@@ -281,11 +278,14 @@ def max_score(wine_variety, selected_state, price_value, points_value):
 
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
-    max_points = max(df_filtered['points'])
-    df_filtered = df_filtered[df_filtered['points'] == max_points]
-    wine_name = df_filtered['title'].iloc[0]
-
-    return str(str(round(max_points,2)))
+    if len(df_filtered):
+        max_score = max(df_filtered['points'])
+        max_score = str(round(max_score, 2))
+    else:
+        max_score = None
+    
+    df_filtered = df_filtered[df_filtered['points'] == max_score]
+    return max_score
 
 
 @app.callback(
@@ -313,12 +313,15 @@ def max_score_name(wine_variety, selected_state, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
     
-    max_points = max(df_filtered['points'])
-    df_filtered = df_filtered[df_filtered['points'] == max_points]
-    wine_name = df_filtered['title'].iloc[0]
-    
+    if len(df_filtered):
+        max_points = max(df_filtered['points'])
+        df_filtered = df_filtered[df_filtered['points'] == max_points]
+        wine_name = df_filtered['title'].iloc[0]
+        wine_name = str(wine_name.split(' (')[0])
+    else:
+        wine_name = 'No Wines Available'
 
-    return str(wine_name.split(' (')[0])
+    return wine_name
 
 @app.callback(
     Output('highest_value_name', 'children'),
@@ -344,10 +347,15 @@ def max_value_name(wine_variety, selected_state, price_value, points_value):
 
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
-    max_value = max(df_filtered['value'])
-    df_filtered = df_filtered[df_filtered['value'] == max_value]
-    wine_name = df_filtered['title'].iloc[0]
-    return (wine_name.split(' (')[0] + '     ')
+    
+    if len(df_filtered):
+        max_value = max(df_filtered['value'])
+        df_filtered = df_filtered[df_filtered['value'] == max_value]
+        wine_name = df_filtered['title'].iloc[0]
+        wine_name = wine_name.split(' (')[0] + '     '
+    else: 
+        wine_name = 'No Wines Available'
+    return wine_name
 
 @app.callback(
     Output('highest_value', 'children'),
@@ -374,9 +382,14 @@ def max_value(wine_variety, selected_state, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
 
-    max_value = max(df_filtered['value'])
+    if len(df_filtered):
+        max_value = max(df_filtered['value'])
+        max_value = str(round(max_value, 2))
+    else:
+        max_value = None
+    
     df_filtered = df_filtered[df_filtered['value'] == max_value]
-    return str(str(round(max_value, 2)))
+    return max_value
   
 @app.callback(
     Output('table_variety', 'options'),
@@ -574,7 +587,8 @@ def table(state, price, points, variety):
 
     df_filtered = df_filtered[(df_filtered['Price'] >= min(price)) & (df_filtered['Price'] <= max(price))]
     df_filtered = df_filtered[(df_filtered['Points'] >= min(points)) & (df_filtered['Points'] <= max(points))]
-   
+
+    df_filtered = df_filtered.astype(str)
     return df_filtered.to_dict('records')
 
 @app.callback(
@@ -636,8 +650,8 @@ def table_plot(selected_state, price_value, points_value, wine_variety):
     chart1 = alt.Chart(df_filtered).mark_point().encode(
         x=alt.X('price', scale=alt.Scale(zero=False)),
         y=alt.Y('points', scale=alt.Scale(zero=False)),
-        color = alt.Color('variety', legend=alt.Legend(columns=3)),#, scale=alt.Scale(scheme='bluepurple')),
-        opacity = alt.condition(select_price & select_points & selection, alt.value(0.5), alt.value(0)),
+        color = alt.Color('variety', legend=alt.Legend(columns=4)),#, scale=alt.Scale(scheme='bluepurple')),
+        opacity = alt.condition(select_price & select_points & selection, alt.value(0.7), alt.value(0)),
         tooltip='title').add_selection(selection).interactive()
     
     chart = (chart1 & (multidim_legend | price_slider | points_slider )).configure_legend(orient='bottom')
