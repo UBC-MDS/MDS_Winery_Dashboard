@@ -621,8 +621,7 @@ def table(state, price, points, variety):
     Input('table_variety', 'value'))
 def table_plot(selected_state, price_value, points_value, wine_variety):
     if selected_state == 'select your state':
-        df_filtered = df
-        return None
+        df_filtered = df[df['state']=="New York"]
     else:
         if type(selected_state) == list:
             df_filtered = df[df['state'].isin(selected_state)]
@@ -630,8 +629,7 @@ def table_plot(selected_state, price_value, points_value, wine_variety):
             df_filtered = df[df['state'] == selected_state]
     # filterng data based on wine variety selection
     if wine_variety == 'select a variety':
-        return None
-        df_filtered = df_filtered
+        df_filtered = df_filtered[df_filtered['variety']=="Red Blend"]
     else:
         if type(wine_variety) == list:
             df_filtered = df_filtered[df_filtered['variety'].isin(wine_variety)]
