@@ -598,10 +598,14 @@ def table(state, price, points, variety):
             df_filtered = display_df[display_df['State'].isin(state)]
         else:
             df_filtered = display_df[display_df['State'] == state]
-    if type(variety) == list:
-        df_filtered = df_filtered[df_filtered['Variety'].isin(variety)]
-    else:  
-        df_filtered = df_filtered.query("Variety == @variety")   
+
+    if variety == "select a variety":
+        df_filtered = df_filtered
+    else:
+        if type(variety) == list:
+            df_filtered = df_filtered[df_filtered['Variety'].isin(variety)]
+        else:  
+            df_filtered = df_filtered.query("Variety == @variety")   
 
     df_filtered = df_filtered[(df_filtered['Price'] >= min(price)) & (df_filtered['Price'] <= max(price))]
     df_filtered = df_filtered[(df_filtered['Points'] >= min(points)) & (df_filtered['Points'] <= max(points))]
