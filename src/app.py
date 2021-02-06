@@ -253,9 +253,15 @@ app.layout = dbc.Container([
                         id = 'table_plots',
                         style={'border-width': '0', 'width': '100%', 'height': '600px'})]),
                 dbc.Col([
+                dcc.Dropdown(
+                        id='axis',
+                        value='price',  
+                        options=[{'label': "price", 'value': "price"}, 
+                        {'label': "points", 'value': "points"}]
+                ),
                 html.Iframe(
                         id = 'heat_plot',
-                        style={'border-width': '0', 'width': '100%', 'height': '600px'})])
+                        style={'border-width': '0', 'width': '100%', 'height': '100%'})])
                 ])     
         ],label='Data')]),
 ])
@@ -287,11 +293,12 @@ def max_score(wine_variety, selected_state, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
     if len(df_filtered):
         max_score = max(df_filtered['points'])
+        df_filtered = df_filtered[df_filtered['points'] == max_score]
         max_score = str(round(max_score, 2))
     else:
         max_score = None
     
-    df_filtered = df_filtered[df_filtered['points'] == max_score]
+    
     return max_score
 
 
@@ -391,11 +398,12 @@ def max_value(wine_variety, selected_state, price_value, points_value):
 
     if len(df_filtered):
         max_value = max(df_filtered['value'])
+        df_filtered = df_filtered[df_filtered['value'] == max_value]
         max_value = str(round(max_value, 2))
     else:
         max_value = None
     
-    df_filtered = df_filtered[df_filtered['value'] == max_value]
+    
     return max_value
   
 @app.callback(
@@ -679,10 +687,11 @@ def cross_tab_update_price(state, variety, points, price):
 
 @app.callback(
     Output('heat_plot', 'srcDoc'),
-    Input('province-widget', 'value'),
-    Input('price', 'value'),
-    Input('points', 'value'))
-def plot_heat(selected_state, price_value, points_value):
+    Input('table_state', 'value'),
+    Input('axis', 'value'),
+    Input('table_price', 'value'),
+    Input('table_points', 'value'))
+def plot_heat(selected_state,axis, price_value, points_value):
     if selected_state == 'select your state':
         df_filtered = df
     else:
@@ -693,43 +702,53 @@ def plot_heat(selected_state, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
 
-    variety_df = df_filtered.groupby(['variety']).size().reset_index(name='counts')
-    variety_df = variety_df.sort_values(by='counts')
-    popular_varieties = variety_df.query('counts > 500')['variety']
-
-    # Filter the data set to include only popular grape varieties
-    varieties_plot_data = df_filtered[df_filtered['variety'].isin(popular_varieties.tolist())]
-    varieties_heatmap_plot = alt.Chart(varieties_plot_data.query('price < 100')).mark_rect().encode(
-    x=alt.X("price" + ':Q',
-                    bin=alt.Bin(maxbins=10),
-                    title="Price ($)"),
+    if axis == 'price':
+        heatmap = alt.Chart(df_filtered.query('price < 100')).mark_rect().encode(
+            x=alt.X("price" + ':Q',
+            bin=alt.Bin(maxbins=10),
+            title= "Price($)"),
             y=alt.Y('variety:O', 
-                    title="Grape Variety"),
-            color=alt.Color('average(price):Q',
-                            scale=alt.Scale(scheme="bluepurple"),
-            legend=alt.Legend(
-                            orient='right', title="Average Value")
+                    title="Wine Variety"),
+                    color=alt.Color('average(price):Q',
+                    scale=alt.Scale(scheme="bluepurple"),
+                    legend=alt.Legend(
+                        orient='right', title="Average price")
                         ),
-            tooltip=[alt.Tooltip('average(points):Q', format='.2f'),
-                     alt.Tooltip('average(price)', format='$.2f'),
-                     alt.Tooltip('average(value)', format='.2f'),
-                     alt.Tooltip('count(title)')]
-    ).properties(
-            title="Average price for Popular Grape Varieties"
-    ).configure_axis(
-            grid=False,
-            labelAngle=0). properties(width=300, height=300)
-    return varieties_heatmap_plot.to_html()
-
-
-# @app.callback(
-#     Output('table_state', 'value'),
-#     [Input('reset-btn_tbl', 'n_clicks')],
-# )
-# def reset_tbl(n_clicks):
-#     if n_clicks > 0:
-#         return None
-
+                        tooltip=[alt.Tooltip('average(points):Q', format='.2f'),
+                        alt.Tooltip('average(price)', format='$.2f'),
+                        alt.Tooltip('average(value)', format='.2f'),
+                        alt.Tooltip('count(title)')]
+                        ).properties(
+                            title="Average price for Popular Grape Varieties"
+                            ).configure_axis(
+                                labelFontSize=12,
+                                titleFontSize=12,
+                                grid=False,
+                                labelAngle=0). properties(width=300, height=300)
+    if axis == "points":
+        heatmap = alt.Chart(df_filtered).mark_rect().encode(
+            x=alt.X("points" + ':Q',
+            bin=alt.Bin(maxbins=10),
+            title= "Rating Score"),
+            y=alt.Y('variety:O', 
+                    title="Wine Variety"),
+                    color=alt.Color('average(points):Q',
+                    scale=alt.Scale(scheme="bluepurple"),
+                    legend=alt.Legend(
+                        orient='right', title="Average rating")
+                        ),
+                        tooltip=[alt.Tooltip('average(points):Q', format='.2f'),
+                        alt.Tooltip('average(price)', format='$.2f'),
+                        alt.Tooltip('average(value)', format='.2f'),
+                        alt.Tooltip('count(title)')]
+                        ).properties(
+                            title="Average rating for Popular Grape Varieties"
+                            ).configure_axis(
+                                labelFontSize=12,
+                                titleFontSize=12,
+                                grid=False,
+                                labelAngle=0). properties(width=300, height=300)
+    return heatmap.to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
