@@ -779,6 +779,7 @@ def reset_1(clicks):
         res3 = [df.price.min(), df.price.max()]
         res4 = [df.points.min(), df.points.max()]
         return res1, res2, res3, res4
+
         
 # reset-btn-2
 @app.callback(
