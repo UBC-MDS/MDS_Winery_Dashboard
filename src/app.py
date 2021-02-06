@@ -119,7 +119,7 @@ app.layout = dbc.Container([
                         value=[df['points'].min(), df['points'].max()],
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
-                    ], style={'border': '1px solid', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4,
+                    ], style={'border': '1px solid', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 0, 'margin-right': 0}, md=4,
                 ),
                 dbc.Col([
                     html.Iframe(
@@ -248,7 +248,9 @@ app.layout = dbc.Container([
                 ], md=8)
             ]),
             dbc.Row([
+                
                 dbc.Col([
+                    html.Br(),
                     html.Iframe(
                         id = 'table_plots',
                         style={'border-width': '0', 'width': '100%', 'height': '600px'})]),
@@ -477,7 +479,7 @@ def plot_altair(selected_state, price_value, points_value):
         max(new_data['points'])])),
         color=alt.Color('variety',scale=alt.Scale(scheme='bluepurple'), legend=None),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
-.add_selection(click)).properties(title="Variety vs Rating Bar plot", width=300, height=300).interactive()
+.add_selection(click)).properties(title="Variety vs Rating Bar plot", width=300, height=280).interactive()
 
     
     ranked_bar = (alt.Chart(new_data).mark_bar().encode(
@@ -492,7 +494,7 @@ def plot_altair(selected_state, price_value, points_value):
         max(new_data['price'])])),
         color=alt.Color('variety',scale=alt.Scale(scheme='bluepurple'), legend=None),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
-.add_selection(click)).properties(title="Variety vs Price Bar plot", width=300, height=300).interactive()
+.add_selection(click)).properties(title="Variety vs Price Bar plot", width=300, height=280).interactive()
     chart = (ranked_bar1 | ranked_bar).configure_axisX(
                 labelAngle=60).configure_axis(
                                 labelFontSize=12,
