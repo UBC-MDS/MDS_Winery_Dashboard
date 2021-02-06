@@ -145,6 +145,12 @@ app.layout = dbc.Container([
                             dbc.Card([
                                 dbc.CardHeader('Highest Score Wine:', 
                                 style={'fontWeight': 'bold', 'color':'white','font-size': '22px', 'backgroundColor':'#522889', 'width': '100%', 'height': '50px'}),
+                                dbc.CardBody(id='highest_score_name', style={'color': '#522889', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
+                            dbc.CardBody(
+                                id='highest_score',style={'color': '#522889', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
+                        ]),
+                        ])
+                    ], md = 3),
                 dbc.Col([
                     
                     html.Iframe(
@@ -176,6 +182,7 @@ app.layout = dbc.Container([
                         multi=True,
                         placeholder='Select a State'
                     ),
+                    html.Br(),
                     html.Label(['Wine Type'], style={
                 'color': '#522889', "font-weight": "bold"
             }
@@ -777,7 +784,6 @@ def reset_1(clicks):
         res3 = [df.price.min(), df.price.max()]
         res4 = [df.points.min(), df.points.max()]
         return res1, res2, res3, res4
-
 
 # reset-btn-2
 @app.callback(
