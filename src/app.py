@@ -134,20 +134,18 @@ app.layout = dbc.Container([
                     dbc.Row([
                             dbc.Card([
                                 dbc.CardHeader('Highest Value Wine:', 
-                                style={'fontWeight': 'bold', 'color':'black','font-size': '22px', 'backgroundColor':'#9980D4','width': '100%', 'height': '100%'}),
-                                html.H5(id='highest_value_name', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '100%'}),
-                            html.Br(),
-                            html.H4(
-                                id='highest_value', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '100%'})])]),
+                                style={'fontWeight': 'bold', 'color':'black','font-size': '22px', 'backgroundColor':'#9980D4','width': '100%', 'height': '50px'}),
+                                dbc.CardBody(id='highest_value_name', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
+                            dbc.CardBody(
+                                id='highest_value', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'})])]),
                     html.Br(),     
                     dbc.Row([
                             dbc.Card([
                                 dbc.CardHeader('Highest Score Wine:', 
-                                style={'fontWeight': 'bold', 'color':'black','font-size': '22px', 'backgroundColor':'#9980D4', 'width': '100%', 'height': '100%'}),
-                                html.H5(id='highest_score_name', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '100%'}),
-                            html.Br(),
-                            html.H4(
-                                id='highest_score',style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '100%'}),
+                                style={'fontWeight': 'bold', 'color':'black','font-size': '22px', 'backgroundColor':'#9980D4', 'width': '100%', 'height': '50px'}),
+                                dbc.CardBody(id='highest_score_name', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
+                            dbc.CardBody(
+                                id='highest_score',style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
                         ]),
                         ])
                     ], md = 3),
@@ -155,7 +153,7 @@ app.layout = dbc.Container([
                     
                     html.Iframe(
                         id = 'plots',
-                        style={'border-width': '0', 'width': '100%', 'height': '500px'})
+                        style={'border-width': '0', 'width': '100%', 'height': '510px'})
                     ]),
 
                 ]),
@@ -224,7 +222,7 @@ app.layout = dbc.Container([
                         id='table',
                         columns=[{"name": col, "id": col} for col in display_df.columns[:]], 
                         data=display_df.to_dict('records'),
-                        page_size=8,
+                        page_size=10,
                         sort_action='native',
                         filter_action='native',
                         style_header = {'textAlign': 'left'},
