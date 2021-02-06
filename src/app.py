@@ -28,7 +28,7 @@ app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
 server=app.server
 
 colors = {
-    'background': '#111111',
+    'background': "#111111",
     'text': '#522889'
 }
 
@@ -84,10 +84,11 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id='province-widget',
                         value='select your state',  
-                        options=[{'label': state, 'value': state} for state in df['state'].unique()],
+                        options=[{'label': state, 'value': state} for state in df['state'].sort_values().unique()],
                         multi=True,
                         placeholder='Select a State'
                     ),
+                    html.Br(),
                     html.Label(['Wine Type'], style={'color': '#7a4eb5', "font-weight": "bold"}
                     ),
                     dcc.Dropdown(
@@ -119,7 +120,8 @@ app.layout = dbc.Container([
                         value=[df['points'].min(), df['points'].max()],
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
-
+                    html.Br(),
+                    html.Button('Reset', id = 'reset-btn-1', n_clicks=0, className='reset-btn-1'),
                     ], style={'border': '1px solid', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4,
                 ),
                 dbc.Col([
@@ -176,10 +178,11 @@ app.layout = dbc.Container([
                     dcc.Dropdown(
                         id='table_state',
                         value='select your state',  
-                        options=[{'label': state, 'value': state} for state in df['state'].unique()],
+                        options=[{'label': state, 'value': state} for state in df['state'].sort_values().unique()],
                         multi=True,
                         placeholder='Select a State'
                     ),
+                    html.Br(),
                     html.Label(['Wine Type'], style={
                 'color': '#7a4eb5', "font-weight": "bold"
             }
@@ -214,6 +217,8 @@ app.layout = dbc.Container([
                         value=[df['points'].min(), df['points'].max()],
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}, className='slider'
                         ),
+                    html.Br(),
+                    html.Button('Reset', id = 'reset-btn-2', n_clicks=0, className='reset-btn-2'),
                 ],style={'border': '1px solid', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4),
                 dbc.Col([
                     html.Br(),
@@ -418,7 +423,7 @@ def wine_options(state):
             df_filtered = df[df['state'].isin(state)]
         else:
             df_filtered = df[df['state'] == state]
-    return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
+    return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].sort_values().unique()]
 
 @app.callback(
     Output('wine_variety', 'options'),
@@ -431,7 +436,7 @@ def wine_options(state):
             df_filtered = df[df['state'].isin(state)]
         else:
             df_filtered = df[df['state'] == state]
-    return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].unique()]
+    return [{'label': variety, 'value': variety} for variety in df_filtered['variety'].sort_values().unique()]
 
 
 @app.callback(
@@ -714,16 +719,6 @@ def plot_heat(selected_state,axis, price_value, points_value):
     df_filtered = df_filtered[(df_filtered['price'] >= min(price_value)) & (df_filtered['price'] <= max(price_value))]
     df_filtered = df_filtered[(df_filtered['points'] >= min(points_value)) & (df_filtered['points'] <= max(points_value))]
 
-<<<<<<< HEAD
-# @app.callback(
-#     Output('table_state', 'value'),
-#     [Input('reset-btn_tbl', 'n_clicks')],
-# )
-# def reset_tbl(n_clicks):
-#     if n_clicks > 0:
-#         return None
-
-=======
     if axis == 'price':
         heatmap = alt.Chart(df_filtered.query('price < 100')).mark_rect().encode(
             x=alt.X("price" + ':Q',
@@ -771,7 +766,36 @@ def plot_heat(selected_state,axis, price_value, points_value):
                                 grid=False,
                                 labelAngle=0). properties(width=300, height=300)
     return heatmap.to_html()
->>>>>>> f71eb3148ef288bb6cca123e04f42aeda287184f
+
+# reset-btn-1
+@app.callback(
+    Output('province-widget', 'value'),
+    Output('wine_variety', 'value'),
+    Output('price', 'value'),
+    Output('points', 'value'),
+    [Input('reset-btn-1', 'n_clicks')])
+
+def reset_1(clicks):
+    if clicks==0:
+        return
+    else:
+        res1 = 'select your state'
+        res2 = 'select a variety'
+        res3 = [df.price.min(), df.price.max()]
+        res4 = [df.points.min(), df.points.max()]
+        return res1, res2, res3, res4
+
+# reset-btn-2
+@app.callback(
+    Output('reset-btn-1', 'n_clicks'),
+    [Input('reset-btn-2', 'n_clicks')])
+
+def reset_2(clicks):
+    if clicks == 0:
+        return 
+    else:
+        return clicks
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
