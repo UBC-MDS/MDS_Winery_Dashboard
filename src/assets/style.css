@@ -36,15 +36,16 @@ body {
     margin-bottom: 22;
     margin-right: 11;
 }
-#reset-btn, #reset-btn_tbl {
+#reset-btn-1, #reset-btn-2 {
     padding: 0.5rem;
     border-radius: 0.3rem;
-    background-color: #2B2B35;
-    color: darkgray;
+    border-width: 0cm;
+    background-color: white;
+    color: #b18ae6;
 }
 
-#reset-btn: :hover, #reset-btn_tbl {
-    color: white;
+#reset-btn-1: :hover, #reset-btn-2 {
+    color: #b18ae6;
     cursor: pointer;
 }
 
