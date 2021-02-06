@@ -663,13 +663,18 @@ def table_plot(selected_state, price_value, points_value, wine_variety):
     #     y=alt.y('title',axis=None))
 
     chart1 = alt.Chart(df_filtered).mark_point().encode(
-        x=alt.X('price', scale=alt.Scale(zero=False)),
-        y=alt.Y('points', scale=alt.Scale(zero=False)),
+        x=alt.X('price', scale=alt.Scale(zero=False), title = "Price($)"),
+        y=alt.Y('points', scale=alt.Scale(zero=False), title = "Rating"),
         color = alt.Color('variety', legend=alt.Legend(columns=4)),#, scale=alt.Scale(scheme='bluepurple')),
         opacity = alt.condition(select_price & select_points & selection, alt.value(0.7), alt.value(0)),
         tooltip='title').add_selection(selection).interactive()
     
-    chart = (chart1 & (multidim_legend | price_slider | points_slider )).configure_legend(orient='bottom')
+    chart = (chart1 & (multidim_legend | price_slider | points_slider )).configure_legend(orient='bottom').properties(
+                            title="Rating vs Price"
+                            ).configure_axis(
+                                labelFontSize=14,
+                                titleFontSize=14). configure_title(fontSize=16,
+                                anchor='middle')
 
     return chart.to_html()
 
