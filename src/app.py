@@ -149,8 +149,6 @@ app.layout = dbc.Container([
                     
                     html.Iframe(
                         id = 'plots',
-                        style={'border-width': '0', 'width': '100%', 'height': '500px'})
-=======
                         style={'border-width': '0', 'width': '100%', 'height': '510px'})
                     ]),
 
@@ -780,7 +778,7 @@ def reset_1(clicks):
         res4 = [df.points.min(), df.points.max()]
         return res1, res2, res3, res4
 
-        
+
 # reset-btn-2
 @app.callback(
     Output('reset-btn-1', 'n_clicks'),
