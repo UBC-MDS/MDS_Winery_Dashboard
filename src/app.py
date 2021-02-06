@@ -42,7 +42,7 @@ collapse = html.Div(
             style={'margin-top': '10px',
                 'width': '150px',
                 'background-color': 'white',
-                'color': 'steelblue'}
+                'color': '#522889'}
         ),
     ]
 )
@@ -61,16 +61,16 @@ def toggle_collapse(n, is_open):
 app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
-            html.H1('MDS Winery Dashboard', style={'text-align': 'center', 'color': '#522889', 'font-size': '40px', 'font-family': 'Georgia'}),
+            html.H1('MDS Winery Dashboard', style={'text-align': 'center', 'color': 'white', 'font-size': '40px', 'font-family': 'Georgia'}),
             dbc.Collapse(html.P(
                 """
-                Let me introduce our MDS winery dashboard to you =)
+                The dashboard will help you with your wine shopping today. Whether you desire crisp Californian Chardonnay or bold Cabernet Sauvignon from Texas, simply select a state and the wine type. The results will help you to choose the best wine for you.
                 """,
-                style={'color': 'white', 'width': '55%'}
+                style={'color': 'white', 'width': '70%'}
             ), id='collapse'),
         ], md=10),
         dbc.Col([collapse])
-    ], style={'backgroundColor': '#E4C8EB', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 11}),
+    ], style={'backgroundColor': '#522889', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 11}),
 
     dcc.Tabs([
         dcc.Tab([
@@ -79,7 +79,7 @@ app.layout = dbc.Container([
                     html.Br(),
                     html.Label([
                         'State Selection'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
+                'color': '#522889', "font-weight": "bold"
             }),
                     dcc.Dropdown(
                         id='province-widget',
@@ -89,7 +89,7 @@ app.layout = dbc.Container([
                         placeholder='Select a State'
                     ),
                     html.Br(),
-                    html.Label(['Wine Type'], style={'color': '#7a4eb5', "font-weight": "bold"}
+                    html.Label(['Wine Type'], style={'color': '#522889', "font-weight": "bold"}
                     ),
                     dcc.Dropdown(
                         id='wine_variety',
@@ -99,7 +99,7 @@ app.layout = dbc.Container([
                     ),
                     html.Br(),
                     html.Label(['Price Range'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
+                'color': '#522889', "font-weight": "bold"
             }
                     ),
                     dcc.RangeSlider(
@@ -107,10 +107,10 @@ app.layout = dbc.Container([
                         min=df['price'].min(),
                         max=df['price'].max(),
                         value=[df['price'].min(), df['price'].max()],
-                        marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100','color': '#7a4eb5'}
+                        marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100','color': '#522889'}
                     ),
                     html.Label(['Points Range'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
+                'color': '#522889', "font-weight": "bold"
             }
                     ),
                     dcc.RangeSlider(
@@ -136,18 +136,18 @@ app.layout = dbc.Container([
                     dbc.Row([
                             dbc.Card([
                                 dbc.CardHeader('Highest Value Wine:', 
-                                style={'fontWeight': 'bold', 'color':'black','font-size': '22px', 'backgroundColor':'#9980D4','width': '100%', 'height': '50px'}),
-                                dbc.CardBody(id='highest_value_name', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
+                                style={'fontWeight': 'bold', 'color':'white','font-size': '22px', 'backgroundColor':'#522889','width': '100%', 'height': '50px'}),
+                                dbc.CardBody(id='highest_value_name', style={'color': '#522889', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
                             dbc.CardBody(
-                                id='highest_value', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'})])]),
+                                id='highest_value', style={'color': '#522889', 'fontSize': 18, 'width': '300px', 'height': '70px'})])]),
                     html.Br(),     
                     dbc.Row([
                             dbc.Card([
                                 dbc.CardHeader('Highest Score Wine:', 
-                                style={'fontWeight': 'bold', 'color':'black','font-size': '22px', 'backgroundColor':'#9980D4', 'width': '100%', 'height': '50px'}),
-                                dbc.CardBody(id='highest_score_name', style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
+                                style={'fontWeight': 'bold', 'color':'white','font-size': '22px', 'backgroundColor':'#522889', 'width': '100%', 'height': '50px'}),
+                                dbc.CardBody(id='highest_score_name', style={'color': '#522889', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
                             dbc.CardBody(
-                                id='highest_score',style={'color': 'blue', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
+                                id='highest_score',style={'color': '#522889', 'fontSize': 18, 'width': '300px', 'height': '70px'}),
                         ]),
                         ])
                     ], md = 3),
@@ -184,7 +184,7 @@ app.layout = dbc.Container([
                     ),
                     html.Br(),
                     html.Label(['Wine Type'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
+                'color': '#522889', "font-weight": "bold"
             }
                     ),
                     dcc.Dropdown(
@@ -195,7 +195,7 @@ app.layout = dbc.Container([
                     ),
                     html.Br(),
                     html.Label(['Price Range'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
+                'color': '#522889', "font-weight": "bold"
             }
                     ),
                     dcc.RangeSlider(
@@ -206,7 +206,7 @@ app.layout = dbc.Container([
                         marks = {4: '$4', 25: '$25', 50: '$50', 75: '$75', 100: '$100','color': '#7a4eb5'}
                     ),
                     html.Label(['Points Range'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
+                'color': '#522889', "font-weight": "bold"
             }
                     ),
                     
