@@ -119,7 +119,7 @@ app.layout = dbc.Container([
                         value=[df['points'].min(), df['points'].max()],
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
-                    ], md=4,
+                    ], style={'backgroundColor': 'lightgray', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4,
                 ),
                 dbc.Col([
                     html.Iframe(
@@ -215,7 +215,7 @@ app.layout = dbc.Container([
                         value=[df['points'].min(), df['points'].max()],
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}, className='slider'
                         ),
-                ], md=4,),
+                ],style={'backgroundColor': '#DCDCDC', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4),
                 dbc.Col([
                     html.Br(),
                     html.Br(),
