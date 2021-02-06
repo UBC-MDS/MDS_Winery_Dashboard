@@ -729,7 +729,7 @@ def plot_heat(selected_state,axis, price_value, points_value):
                     color=alt.Color('average(price):Q',
                     scale=alt.Scale(scheme="bluepurple"),
                     legend=alt.Legend(
-                        orient='right', title="Average price")
+                        orient='bottom', title="Average price")
                         ),
                         tooltip=[alt.Tooltip('average(points):Q', format='.2f'),
                         alt.Tooltip('average(price)', format='$.2f'),
@@ -752,7 +752,7 @@ def plot_heat(selected_state,axis, price_value, points_value):
                     color=alt.Color('average(points):Q',
                     scale=alt.Scale(scheme="bluepurple"),
                     legend=alt.Legend(
-                        orient='right', title="Average rating")
+                        orient='bottom', title="Average rating")
                         ),
                         tooltip=[alt.Tooltip('average(points):Q', format='.2f'),
                         alt.Tooltip('average(price)', format='$.2f'),
