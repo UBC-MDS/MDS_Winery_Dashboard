@@ -472,12 +472,12 @@ def plot_altair(selected_state, price_value, points_value):
             op="sum",  
             order='descending'
             )),
-        alt.Y('points' + ':Q', title='Points',
+        alt.Y('points' + ':Q', title='Rating',
         scale=alt.Scale(domain=[min(new_data['points']),
         max(new_data['points'])])),
         color=alt.Color('variety',scale=alt.Scale(scheme='bluepurple'), legend=None),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
-.add_selection(click)).properties(width=300, height=300).interactive()
+.add_selection(click)).properties(title="Variety vs Rating Bar plot", width=300, height=300).interactive()
 
     
     ranked_bar = (alt.Chart(new_data).mark_bar().encode(
@@ -492,9 +492,12 @@ def plot_altair(selected_state, price_value, points_value):
         max(new_data['price'])])),
         color=alt.Color('variety',scale=alt.Scale(scheme='bluepurple'), legend=None),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
-.add_selection(click)).properties(width=300, height=300).interactive()
+.add_selection(click)).properties(title="Variety vs Price Bar plot", width=300, height=300).interactive()
     chart = (ranked_bar1 | ranked_bar).configure_axisX(
-                labelAngle=60)
+                labelAngle=60).configure_axis(
+                                labelFontSize=12,
+                                titleFontSize=12).configure_title(fontSize=16,
+                                anchor='middle')
     return chart.to_html()
 
 @app.callback(
