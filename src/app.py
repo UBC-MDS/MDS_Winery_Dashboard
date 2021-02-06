@@ -726,7 +726,7 @@ def plot_heat(selected_state,axis, price_value, points_value):
             title= "Price($)"),
             y=alt.Y('variety:O', 
                     title="Wine Variety"),
-                    color=alt.Color('average(price):Q',
+                    color=alt.Color('average(points):Q',
                     scale=alt.Scale(scheme="bluepurple"),
                     legend=alt.Legend(
                         orient='bottom', title="Average price")
@@ -736,7 +736,7 @@ def plot_heat(selected_state,axis, price_value, points_value):
                         alt.Tooltip('average(value)', format='.2f'),
                         alt.Tooltip('count(title)')]
                         ).properties(
-                            title="Average price for Popular Grape Varieties"
+                            title="Average price for Popular Varieties"
                             ).configure_axis(
                                 labelFontSize=12,
                                 titleFontSize=12,
@@ -749,7 +749,7 @@ def plot_heat(selected_state,axis, price_value, points_value):
             title= "Rating Score"),
             y=alt.Y('variety:O', 
                     title="Wine Variety"),
-                    color=alt.Color('average(points):Q',
+                    color=alt.Color('average(price):Q',
                     scale=alt.Scale(scheme="bluepurple"),
                     legend=alt.Legend(
                         orient='bottom', title="Average rating")
@@ -759,7 +759,7 @@ def plot_heat(selected_state,axis, price_value, points_value):
                         alt.Tooltip('average(value)', format='.2f'),
                         alt.Tooltip('count(title)')]
                         ).properties(
-                            title="Average rating for Popular Grape Varieties"
+                            title="Average rating for Popular Varieties"
                             ).configure_axis(
                                 labelFontSize=12,
                                 titleFontSize=12,
