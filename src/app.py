@@ -295,7 +295,7 @@ app.layout = dbc.Container([
                 ])     
         ],label='Data')]),
 
-            html.Div([html.H1('Done by: Jianru Deng, Kamal Jahromi, Mo Garoub, and Neel Phaterpekar. Github repo: https://github.com/UBC-MDS/MDS_Winery_Dashboard', style={'text-align': 'center', 'color': 'black', 'font-size': '17px', 'font-family': 'Georgia'})],
+            html.Div([html.H1('Done by: Jianru Deng, Kamal Moravej, Mo Garoub, and Neel Phaterpekar. Github repo: https://github.com/UBC-MDS/MDS_Winery_Dashboard', style={'text-align': 'center', 'color': 'black', 'font-size': '24px', 'font-family': 'Georgia'})],
                     style ={'border': '1px solid #522889', 'width': '100%', 'height': '0px'}   
 )   
 
