@@ -10,21 +10,34 @@ from vega_datasets import data
 
 alt.data_transformers.disable_max_rows()
 
-########## Additional Data Filtering ###########################################
-df = pd.read_csv('C:/Users/mgaro/UBC-MDS/DSCI_532/MDS_Winery_Dashboard/data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
-df = df.query('country == "US"') 
+
+# Reading the cleaned dat set
+df = pd.read_csv('data/processed/cleaned_data.csv') 
+
+# Removing Nas from price, points and title rows
 df = df.dropna(subset=['price', 'points', 'title'])
+
+# changing the price dtype to integer
 df[['price']] = df[['price']].astype(int)
+
 df['title'] = df['title'].str.split('(',expand=True)
+
+#  extracting the number of  different variety and filter data
+# for the top 10 based on the number of instances
 stats = df.groupby('variety').count()
 filter = list(stats.sort_values('title', ascending=False)[0:10].reset_index().loc[:,'variety'])
 df = df[df['variety'].isin(filter)].dropna(subset=['price', 'points', 'title'])
+
+# data for table in data tab
 display_df = df[['title', 'variety', 'state', 'points', 'price']]
 display_df = display_df.rename(columns={'title': 'Title', 'variety':'Variety', 'state':'State', 'points':'Points', 'price':'Price'})
-###############################################################################
 
 
-app = dash.Dash(__name__ , title='MDS Winery', external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+# Set the app title
+app.title = "MDS Winery"
+
 server=app.server
 
 colors = {
@@ -32,6 +45,7 @@ colors = {
     'text': '#522889'
 }
 
+# collapse button 
 collapse = html.Div(
     [
         dbc.Button(
@@ -53,12 +67,15 @@ collapse = html.Div(
     [State("collapse", "is_open")],
 )
 def toggle_collapse(n, is_open):
+    """
+    Takes the output of collapse-button as an input if it the toggle
+    buton has clicked by the user shows the information,
+    """
     if n:
         return not is_open
     return is_open
 
-
-
+# setting up the app layout
 app.layout = dbc.Container([
     
     html.Div(style={'backgroundImage': 'url(/assets/tasting.jpg)', 'backgroundRepeat': 'no-repeat', 'backgroundPosition': 'center', 'backgroundSize': 'cover', 'position': 'fixed'}),
@@ -85,6 +102,7 @@ app.layout = dbc.Container([
                         'State Selection'], style={
                 'color': '#522889', "font-weight": "bold"
             }),
+                    # state drop down selection
                     dcc.Dropdown(
                         id='province-widget',
                         value='select your state',  
@@ -95,6 +113,7 @@ app.layout = dbc.Container([
                     html.Br(),
                     html.Label(['Wine Type'], style={'color': '#522889', "font-weight": "bold"}
                     ),
+                    # Wine variety down selection
                     dcc.Dropdown(
                         id='wine_variety',
                         value='select a variety', 
@@ -276,7 +295,7 @@ app.layout = dbc.Container([
                 ])     
         ],label='Data')]),
 
-            html.Div([html.H1('Done by: Jianru Deng, Kamal Jahromi, Mo Garoub, and Neel Phaterpekar. Github repo: https://github.com/UBC-MDS/MDS_Winery_Dashboard', style={'text-align': 'center', 'color': 'black', 'font-size': '17px', 'font-family': 'Georgia'})],
+            html.Div([html.H1('Done by: Jianru Deng, Kamal Moravej, Mo Garoub, and Neel Phaterpekar. Github repo: https://github.com/UBC-MDS/MDS_Winery_Dashboard', style={'text-align': 'center', 'color': 'black', 'font-size': '24px', 'font-family': 'Georgia'})],
                     style ={'border': '1px solid #522889', 'width': '100%', 'height': '0px'}   
 )   
 
@@ -312,10 +331,13 @@ def max_score(wine_variety, selected_state, price_value, points_value):
     if len(df_filtered):
         max_score = max(df_filtered['points'])
         df_filtered = df_filtered[df_filtered['points'] == max_score]
-        max_score = str(round(max_score, 2))
+        max_score = round(max_score, 2)
+        
     else:
         max_score = None
     
+    max_score = f"Highest Points: {max_score}pts"
+
     
     return max_score
 
@@ -421,7 +443,7 @@ def max_value(wine_variety, selected_state, price_value, points_value):
     else:
         max_value = None
     
-    
+    max_value = f"Max Value: {max_value} pts/$"
     return max_value
   
 @app.callback(
