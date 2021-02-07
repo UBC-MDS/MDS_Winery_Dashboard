@@ -3,7 +3,7 @@
 ## About this app
 
 The link to the deployed dashboard:
-https://mds-winery-2020.herokuapp.com/
+https://winery-mds-2021.herokuapp.com/
 
 This dashboard allows you to explore wine varieties, price and rating information by the winery locations across United States. By comparing the selected wine products, customers are able to make their wise purchase based on informative and interactive bar charts.
 
