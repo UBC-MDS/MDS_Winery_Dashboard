@@ -11,7 +11,7 @@ from vega_datasets import data
 alt.data_transformers.disable_max_rows()
 
 ########## Additional Data Filtering ###########################################
-df = pd.read_csv('data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
+df = pd.read_csv('C:/Users/mgaro/UBC-MDS/DSCI_532/MDS_Winery_Dashboard/data/processed/cleaned_data.csv') #data/processed/cleaned_data.csv
 df = df.query('country == "US"') 
 df = df.dropna(subset=['price', 'points', 'title'])
 df[['price']] = df[['price']].astype(int)
@@ -24,9 +24,7 @@ display_df = display_df.rename(columns={'title': 'Title', 'variety':'Variety', '
 ###############################################################################
 
 
-app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
-# Set the app title
-app.title = "MDS Winery"
+app = dash.Dash(__name__ , title='MDS Winery', external_stylesheets=[dbc.themes.BOOTSTRAP])
 server=app.server
 
 colors = {
@@ -60,9 +58,13 @@ def toggle_collapse(n, is_open):
     return is_open
 
 
+
 app.layout = dbc.Container([
+    
+    html.Div(style={'backgroundImage': 'url(/assets/tasting.jpg)', 'backgroundRepeat': 'no-repeat', 'backgroundPosition': 'center', 'backgroundSize': 'cover', 'position': 'fixed'}),
     dbc.Row([
         dbc.Col([
+        
             html.H1('MDS Winery Dashboard', style={'text-align': 'center', 'color': 'white', 'font-size': '40px', 'font-family': 'Georgia'}),
             dbc.Collapse(html.P(
                 """
@@ -132,6 +134,7 @@ app.layout = dbc.Container([
                         style={'border-width': '0', 'width': '100%', 'height': '460px'})
                     ], md=8)
                 ]),
+                html.Div(style={'backgroundImage': 'url(/assets/black.jpg)', 'float': 'right'}),
             dbc.Row([
                     dbc.Col([
                     html.Br(),
@@ -272,8 +275,15 @@ app.layout = dbc.Container([
                         style={'border-width': '0', 'width': '100%', 'height': '100%'})])
                 ])     
         ],label='Data')]),
-])
-    
+
+            html.Div([html.H1('Done by: Jianru Deng, Kamal Jahromi, Mo Garoub, and Neel Phaterpekar. Github repo: https://github.com/UBC-MDS/MDS_Winery_Dashboard', style={'text-align': 'center', 'color': 'black', 'font-size': '17px', 'font-family': 'Georgia'})],
+                    style ={'border': '1px solid #522889', 'width': '100%', 'height': '0px'}   
+)   
+
+])    
+        
+                    
+   
 
 @app.callback(
     Output('highest_score', 'children'),
@@ -797,7 +807,6 @@ def reset_2(clicks):
         return 
     else:
         return clicks
-
 
 if __name__ == '__main__':
     app.run_server(debug=True)
