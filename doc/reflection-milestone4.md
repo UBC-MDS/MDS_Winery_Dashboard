@@ -21,7 +21,7 @@
 
 ## Feedback 
 
-TA and peer feedback was imperative to the improvement of our app. We received 3 main critiques summarized [here](https://github.com/UBC-MDS/MDS_Winery_Dashboard/issues/85) :
+[TA and peer feedback](https://github.com/UBC-MDS/MDS_Winery_Dashboard/issues/85) was imperative to the improvement of our app. We received 3 main critiques:
 
 1. Not enough information was being displayed in general.
 
