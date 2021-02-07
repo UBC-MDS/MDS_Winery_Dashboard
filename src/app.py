@@ -25,6 +25,8 @@ display_df = display_df.rename(columns={'title': 'Title', 'variety':'Variety', '
 
 
 app = dash.Dash(__name__ , external_stylesheets=[dbc.themes.BOOTSTRAP])
+# Set the app title
+app.title = "MDS Winery"
 server=app.server
 
 colors = {
