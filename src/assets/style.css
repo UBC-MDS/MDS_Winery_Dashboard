@@ -37,11 +37,12 @@ body {
     margin-right: 11;
 }
 #reset-btn-1, #reset-btn-2 {
-    padding: 0.5rem;
-    border-radius: 0.3rem;
-    border-width: 0cm;
-    background-color: white;
-    color: #b18ae6;
+    padding: 0.2rem;
+    border-radius: 0.7rem;
+    border-width: 0.01cm;
+    border-color: #0a0000;
+    background-color: rgba(133, 131, 131, 0.26);
+    color: #000000;
 }
 
 #reset-btn-1: :hover, #reset-btn-2 {

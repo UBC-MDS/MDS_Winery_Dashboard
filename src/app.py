@@ -125,7 +125,7 @@ app.layout = dbc.Container([
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
                     html.Br(),
-                    html.Button('Reset', id = 'reset-btn-1', n_clicks=0, className='reset-btn-1'),
+                    dbc.Button('Reset', id = 'reset-btn-1', n_clicks=0, className='reset-btn-1'),                  
                     ], style={'border': '1px solid', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4,
                 ),
                 dbc.Col([
@@ -178,7 +178,7 @@ app.layout = dbc.Container([
                     # ),
                     html.Label([
                         'State Selection'], style={
-                'color': '#7a4eb5', "font-weight": "bold"
+                'color': '#522889', "font-weight": "bold"
             }),
                     dcc.Dropdown(
                         id='table_state',
@@ -223,7 +223,7 @@ app.layout = dbc.Container([
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}, className='slider'
                         ),
                     html.Br(),
-                    html.Button('Reset', id = 'reset-btn-2', n_clicks=0, className='reset-btn-2'),
+                    dbc.Button('Reset', id = 'reset-btn-2', n_clicks=0, className='reset-btn-2'),
                 ],style={'border': '1px solid', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4),
                 dbc.Col([
                     html.Br(),
@@ -496,7 +496,7 @@ def plot_altair(selected_state, price_value, points_value):
         color=alt.Color('variety',scale=alt.Scale(scheme='bluepurple'), legend=None),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
 
-.add_selection(click)).properties(title="Variety vs Rating Bar plot", width=300, height=300).interactive()
+.add_selection(click)).properties(title="Wine Variety Average Ratings", width=300, height=300).interactive()
 
     
     ranked_bar = (alt.Chart(new_data).mark_bar().encode(
@@ -511,7 +511,7 @@ def plot_altair(selected_state, price_value, points_value):
         max(new_data['price'])])),
         color=alt.Color('variety',scale=alt.Scale(scheme='bluepurple'), legend=None),
         opacity=alt.condition(click, alt.value(0.9), alt.value(0.2)))
-.add_selection(click)).properties(title="Variety vs Price Bar plot", width=300, height=300).interactive()
+.add_selection(click)).properties(title="Wine Variety Average Prices", width=300, height=300).interactive()
     chart = (ranked_bar1 | ranked_bar).configure_axisX(
                 labelAngle=60).configure_axis(
                                 labelFontSize=12,
@@ -738,17 +738,17 @@ def plot_heat(selected_state,axis, price_value, points_value):
             title= "Price($)"),
             y=alt.Y('variety:O', 
                     title="Wine Variety"),
-                    color=alt.Color('average(price):Q',
+                    color=alt.Color('average(points):Q',
                     scale=alt.Scale(scheme="bluepurple"),
                     legend=alt.Legend(
-                        orient='bottom', title="Average price")
+                        orient='bottom', title="Average rating")
                         ),
                         tooltip=[alt.Tooltip('average(points):Q', format='.2f'),
                         alt.Tooltip('average(price)', format='$.2f'),
                         alt.Tooltip('average(value)', format='.2f'),
                         alt.Tooltip('count(title)')]
                         ).properties(
-                            title="Average price for Popular Grape Varieties"
+                            title="Average price for Popular Varieties"
                             ).configure_axis(
                                 labelFontSize=12,
                                 titleFontSize=12,
@@ -761,17 +761,17 @@ def plot_heat(selected_state,axis, price_value, points_value):
             title= "Rating Score"),
             y=alt.Y('variety:O', 
                     title="Wine Variety"),
-                    color=alt.Color('average(points):Q',
+                    color=alt.Color('average(price):Q',
                     scale=alt.Scale(scheme="bluepurple"),
                     legend=alt.Legend(
-                        orient='bottom', title="Average rating")
+                        orient='bottom', title="Average price")
                         ),
                         tooltip=[alt.Tooltip('average(points):Q', format='.2f'),
                         alt.Tooltip('average(price)', format='$.2f'),
                         alt.Tooltip('average(value)', format='.2f'),
                         alt.Tooltip('count(title)')]
                         ).properties(
-                            title="Average rating for Popular Grape Varieties"
+                            title="Average rating for Popular Varieties"
                             ).configure_axis(
                                 labelFontSize=12,
                                 titleFontSize=12,
