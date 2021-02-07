@@ -123,7 +123,7 @@ app.layout = dbc.Container([
                         marks = {80: '80', 85: '85', 90: '90', 95: '95', 100: '100'}
                         ),
                     html.Br(),
-                    dbc.Button('Reset', id = 'reset-btn-1', n_clicks=0, className='reset-btn-1'),
+                    dbc.Button('Reset', id = 'reset-btn-1', n_clicks=0, className='reset-btn-1'),                  
                     ], style={'border': '1px solid', 'border-radius': 3, 'padding': 15, 'margin-top': 22, 'margin-bottom': 22, 'margin-right': 0}, md=4,
                 ),
                 dbc.Col([
