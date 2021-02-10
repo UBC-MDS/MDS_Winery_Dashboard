@@ -10,7 +10,7 @@ This dashboard allows you to explore wine varieties, price and rating informatio
 
 ## Authors
 
-* **Jianru Deng** -[@jianridine](https://github.com/jianridine)
+* **Jianru Deng** -[@jianructose](https://github.com/jianructose)
 
 * **Mo Garoub** -[@mgaroub](https://github.com/mgaroub)
 
